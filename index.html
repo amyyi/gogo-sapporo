@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#4A6FA5">
+<title>❄️ 北海道雪季自由行</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="meals.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        fuji: '#4A6FA5',
+        'fuji-dark': '#3A5A8A',
+        snow: '#F8F9FA',
+        warmgray: '#9E9E9E',
+        sakura: '#E8A0BF',
+        matcha: '#7DB9A5',
+        yuzu: '#F4A261',
+      },
+      fontFamily: {
+        zen: ['Zen Maru Gothic', 'sans-serif'],
+      },
+    },
+  },
+}
+</script>
+<style>
+* { font-family: 'Zen Maru Gothic', sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background: #F8F9FA; overflow-x: hidden; }
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+/* Snow pattern background */
+.snow-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234A6FA5' fill-opacity='0.04'%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Ccircle cx='40' cy='25' r='1.5'/%3E%3Ccircle cx='25' cy='50' r='1'/%3E%3Ccircle cx='55' cy='45' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Glass effect */
+.glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(255,255,255,0.85); }
+.glass-dark { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(74,111,165,0.92); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes snowfall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+.fade-in { animation: fadeIn 0.35s ease-out; }
+.slide-up { animation: slideUp 0.4s ease-out; }
+
+/* Active button press */
+.btn-press { transition: transform 0.1s; }
+.btn-press:active { transform: scale(0.95); }
+
+/* Day capsule scrollbar */
+.day-scroll { overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+.day-scroll::-webkit-scrollbar { display: none; }
+
+/* Checkbox styling */
+.custom-check { accent-color: #4A6FA5; width: 20px; height: 20px; cursor: pointer; }
+
+/* Snow particles */
+.snowflake {
+  position: fixed; top: -10px; color: #fff; font-size: 14px;
+  animation: snowfall linear infinite; pointer-events: none; z-index: 0; opacity: 0.5;
+  text-shadow: 0 0 3px rgba(74,111,165,0.3);
+}
+</style>
+</head>
+<body class="snow-bg">
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ============================================================
+// DATA
+// ============================================================
+
+const TRIP_DAYS = [
+  {
+    day: 1, date: '2/21(六)', theme: '抵達暖胃拉麵', location: 'CTS → 札幌',
+    clothing: '長版羽絨外套、發熱衣、防滑雪靴、毛帽、手套',
+    snowTip: '抵達時約 -3°C，機場到市區注意保暖',
+    spots: [
+      { time: '17:20', name: '抵達新千歲機場 (CTS)', desc: '酷航 TR893 抵達。入境、領行李後選擇以下任一方案前往民宿。兩方案抵達時間相近，依現場狀況擇一即可。', icon: '✈️', category: '交通', tags: [] },
+      { time: '18:25', name: '方案 A：機場巴士直達', desc: '直達民宿旁站牌，免轉乘，行李免扛。\n\n💰 車資：1,300 日圓/人（刷 IC 卡）\n🚌 車種：札幌都心行き（經由中島公園）\n📦 行李：下層大型行李艙，司機協助搬運\n\n🚏 搭車位置\n・國內線 14 號站牌（JAL 側）\n・國內線 22 號站牌（ANA 側）\n・國際線 84 號站牌\n→ 若 84 號排隊超過 15 人，建議走到國內線 22 號（發車起點，優先上車）\n\n🚶 如何走到國內線\n・從國際線 2F 抵達大廳出發\n・沿「國內線 Domestic Terminal」標示走\n・通過 Smile Road 連通廊道（室內、有自動步道）\n・到國內線後搭扶梯下 1F\n・全程約 8-10 分鐘\n\n⏰ 推薦班次（國內線發車）\n・18:25 ← 首選\n・18:40\n・18:55\n・19:10（末班備選）\n\n🔖 下車站：南14條行啟通（南14条行啓通）\n→ 下車後步行 2-3 分鐘到民宿', icon: '🚌', category: '交通', tags: [], mapQuery: '新千歳空港 国内線バスのりば' },
+      { time: '18:30', name: '方案 B：JR + 計程車', desc: '在地人與商務客最常用的快速方案。\n\n🚃 第一步：JR 快速 Airport 號\n・乘車地點：機場地下 1F JR 新千歲機場站\n・班次：每 12 分鐘一班，推薦 18:30\n・車程：約 40 分鐘，19:10 抵達 JR 札幌站\n・車資：1,150 日圓（指定席另加 840 日圓）\n\n🚕 第二步：札幌站搭計程車\n・下車後沿「南出口」或「大通公園」指標走\n・乘手扶梯至地面 1F 即到南口\n・出站走「南口」→ 計程車排班站\n　（靠近大丸百貨與東急百貨方向，規模最大）\n・給司機看地址：「南14条西6丁目」\n　或說靠近「行啓通（Gyo-kei-dori）」\n・車程：約 10-15 分鐘\n・車資：約 1,800-2,500 日圓/台\n　（夜間可能加成）\n・10 人分乘 3 台計程車', icon: '🚃', category: '交通', tags: [], mapQuery: '新千歳空港駅' },
+      { time: '19:40', name: 'Gyokeidori Luxury House', desc: 'Check-in，放置行李，確認暖氣運作。兩方案抵達時間相近，皆約 19:40 前後到達。', icon: '🏨', category: '酒店', tags: [], mapQuery: 'Gyokeidori Luxury House 札幌' },
+      { time: '20:30', name: '元祖札幌拉麵橫丁', desc: '推薦：白樺山莊（味噌）、弟子屈（醬油）。請分組 2-4 人自由選擇店家。預算 1,200 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '元祖さっぽろラーメン横丁', photoTip: '拍攝霓虹燈巷弄 + 熱騰騰拉麵特寫' },
+      { time: '22:00', name: 'Seicomart 採買', desc: '民宿附近超商採買隔日早餐、大瓶水、下酒菜。推薦 Hot Chef 現做炸雞丼。', icon: '🛍', category: '購物', tags: [], mapQuery: 'セイコーマート 南14条' },
+    ]
+  },
+  {
+    day: 2, date: '2/22(日)', theme: '和服街拍巡禮', location: '美月櫻・狸小路・大通・北海道神宮・白色戀人',
+    clothing: '和服內搭發熱衣褲、暖暖包貼背部與腳底、防滑草履或雪靴（視店家提供）',
+    snowTip: '和服較薄，務必內搭保暖。移動建議搭計程車減少戶外步行',
+    spots: [
+      { time: '09:30', name: '二條市場 早餐', desc: '推薦：大磯（烤魚/海鮮丼）或 Donburi Chaya。預算 2,500~3,500 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '二条市場 札幌', photoTip: '海鮮丼俯拍 + 市場人文街拍' },
+      { time: '10:00', name: '美月櫻 和服換裝', desc: '開門即前往換裝，租借含挑選約 1 小時。\n\n👘 換裝完成後，直接在附近「狸小路」拍復古商店街氛圍。\n\n⏰ 還衣時間：通常 18:00 關門\n→ 請確認還衣計畫，或詢問店家是否有隔日歸還方案', icon: '👘', category: '活動', tags: ['必拍'], mapQuery: '美月櫻 札幌' },
+      { time: '11:30', name: '東本願寺 札幌別院', desc: '從美月櫻步行約 10-12 分鐘（和服小步走）。\n\n📸 街拍重點\n・莊嚴木造建築與屋簷\n・比起神宮人潮更少\n・非常適合拍出安靜、禪意的和服大片', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '真宗大谷派 東本願寺 札幌別院', photoTip: '木造屋簷下的和服側拍，光影效果極佳' },
+      { time: '12:30', name: 'GARAKU 湯咖哩', desc: '人氣極高！建議派人 11:30 先去抽號碼牌。備案：Treasure 或 Suage+。預算 1,500 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'GARAKU 湯咖哩 札幌', photoTip: '湯咖哩的繽紛蔬菜很上鏡' },
+      { time: '14:00', name: '大通公園 & 札幌電視塔', desc: '搭計程車或地鐵至大通站。\n\n📸 街拍重點\n・以電視塔為背景是大通公園經典構圖\n・噴水池或長椅邊可拍出「札幌地標感」', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'さっぽろテレビ塔', photoTip: '電視塔與和服合照，低角度仰拍更壯觀' },
+      { time: '15:30', name: '北海道神宮', desc: '地鐵東西線至「圓山公園站」或搭計程車。\n\n📸 街拍重點\n・和服與神宮是絕配\n・巨大鳥居、手水舍、通往本殿的林道\n・氣場非常強\n\n⏰ 神宮 17:00 關門，最晚 15:30 抵達可獲最佳午後光線\n\n☕ 休息點：神宮內「六花亭」茶屋\n→ 邊休息邊拍吃甜點的特寫', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '北海道神宮', photoTip: '雪中鳥居 × 和服，用廣角拍出氣勢' },
+      { time: '17:30', name: '白色戀人公園', desc: '地鐵東西線坐到終點「宮之澤站」。\n\n📸 街拍重點\n・完全不同的歐式童話風\n・紅磚牆、噴水池與歐式建築\n・適合拍出華麗「大正浪漫」風情\n・營業到 19:00，傍晚點燈後非常浪漫\n\n💡 這裡是最西邊，排在最後一站最順路\n→ 結束後可直接搭計程車回飯店\n→ 或坐地鐵回大通站還和服', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '白い恋人パーク', photoTip: '傍晚點燈後的歐式建築 × 和服 = 大正浪漫' },
+      { time: '19:30', name: '成吉思汗烤肉', desc: '推薦：達摩 Daruma（需排隊）或松尾成吉思汗（建議訂位）。預算 4,000 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'だるま 本店 札幌', photoTip: '鐵鍋烤肉冒煙的瞬間最有氛圍' },
+    ]
+  },
+  {
+    day: 3, date: '2/23(一)', theme: '小樽運河企鵝', location: '三角市場・水族館・堺町通・運河',
+    clothing: '保暖長版外套、圍巾、毛帽、防水手套',
+    snowTip: '小樽海風較強，體感溫度更低',
+    spots: [
+      { time: '08:30', name: 'JR 至小樽', desc: '計程車至札幌站 → JR 快速 Airport 至「小樽站」（750 日圓）。', icon: '🚃', category: '交通', tags: [], mapQuery: '小樽駅' },
+      { time: '10:00', name: '三角市場 早午餐', desc: '推薦：瀧波食堂。亮點：可點一隻帝王蟹現場分食，配海鮮丼。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '三角市場 小樽', photoTip: '帝王蟹特寫 + 市場全景' },
+      { time: '11:30', name: '小樽水族館', desc: '冬季限定「企鵝雪中散步」！從小樽站前搭巴士約 25 分。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'おたる水族館', photoTip: '企鵝散步用連拍模式捕捉萌瞬間' },
+      { time: '14:30', name: '堺町通商店街', desc: '參觀音樂盒堂、LeTAO 本店吃下午茶、北一硝子館。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: '堺町通り 小樽', photoTip: '音樂盒堂蒸氣時鐘必拍' },
+      { time: '15:30', name: 'みっふぃーおやつ堂 小樽店', desc: 'Miffy 點心堂！位在堺町通上，販售 Miffy 造型甜點與周邊商品。\n\n📍 地址：小樽市堺町 4-11\n🍩 必買：Miffy 造型雞蛋糕、限定周邊', icon: '🛍', category: '購物', tags: [], mapQuery: 'みっふぃーおやつ堂 小樽店', photoTip: 'Miffy 造型甜點超萌必拍' },
+      { time: '16:00', name: '住吉神社', desc: '小樽最大的神社，莊嚴寧靜。從堺町通步行約 10 分鐘。\n\n📸 雪中參道氣氛幽靜\n・石燈籠與鳥居在白雪中格外壯觀\n・人潮比北海道神宮少很多，適合靜心參拜', icon: '⛩', category: '景點', tags: [], mapQuery: '住吉神社 小樽', photoTip: '雪中參道石燈籠，拍出幽靜氛圍' },
+      { time: '17:00', name: '小樽運河', desc: '拍攝 Blue Hour 藍調時刻的運河夜景，倉庫群與煤氣燈最美。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '小樽運河', photoTip: '黃昏 16:30-17:30 是 Blue Hour 黃金時段' },
+      { time: '19:00', name: 'JR 返回札幌', desc: 'JR 返回札幌車站。', icon: '🚃', category: '交通', tags: [] },
+      { time: '20:30', name: 'AOAO SAPPORO', desc: '狸小路 moyuk 大樓的都市水族館，營業到深夜，氣氛如酒吧。', icon: '⛩', category: '景點', tags: [], mapQuery: 'AOAO SAPPORO', photoTip: '夢幻燈光水母缸超好拍' },
+      { time: '22:00', name: '狸小路居酒屋', desc: '推薦：炎 (En) 或串鳥（平價串燒連鎖）。', icon: '🍜', category: '食物', tags: [], mapQuery: '炎 居酒屋 狸小路' },
+    ]
+  },
+  {
+    day: 4, date: '2/24(二)', theme: '千本鳥居帝王蟹', location: '圓山・伏見稻荷・藻岩山',
+    clothing: '發熱內衣、中層刷毛、長版羽絨、暖暖包（藻岩山頂極冷）',
+    snowTip: '藻岩山頂風大氣溫驟降，暖暖包貼滿',
+    spots: [
+      { time: '10:00', name: '圓山公園散策', desc: '享受早晨的雪中森林浴，幽靜療癒。', icon: '⛩', category: '景點', tags: [], mapQuery: '円山公園 札幌' },
+      { time: '11:30', name: '圓山鬆餅午餐', desc: '推薦 Maruyama Pancake。備案：Rojiura Curry Samurai 圓山店。', icon: '🍜', category: '食物', tags: [], mapQuery: 'Maruyama Pancake 札幌', photoTip: '鬆餅堆疊側拍最誘人' },
+      { time: '14:00', name: '伏見稻荷神社', desc: '連綿紅色鳥居在雪地中超醒目（IG 爆紅點）。從圓山搭計程車約 10 分。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '伏見稲荷神社 札幌', photoTip: '紅色鳥居 × 白雪對比最吸睛，從低角度拍' },
+      { time: '16:00', name: '藻岩山夜景', desc: '日本新三大夜景之一！門票約 2,100 日圓。搭計程車或市電至纜車口。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'もいわ山ロープウェイ', photoTip: '日落前 30 分上山可拍到漸層天空' },
+      { time: '19:00', name: '居酒屋 魚金', desc: '生魚片豪邁好吃！或選 Hokkaido Robinson。建議訂位。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '魚金 札幌 薄野', photoTip: '刺身船盛超壯觀必拍' },
+    ]
+  },
+  {
+    day: 5, date: '2/25(三)', theme: '手稻滑雪 Day1', location: '手稻滑雪場',
+    clothing: '滑雪裝備全套（租借）、發熱衣褲、護目鏡、防水手套',
+    snowTip: '二月下旬粉雪品質極佳，適合初學者',
+    spots: [
+      { time: '07:15', name: '方案一：計程車至札幌站北口', desc: '最推薦 10 人團體，省時省力。\n\n🚕 操作方式\n・07:15 前透過 GO 或 Uber App 叫 3 台計程車\n　（日本計程車通常載 4 人，10 人分 3 台）\n・App 定位或告知司機：「札幌駅北口 3番乗り場」\n・車程：約 15-20 分鐘\n・車資：每台約 2,000-2,500 日圓\n　（早晨通勤尖峰，建議預算略高）\n\n✅ 優勢\n・直接載到站牌門口\n・不需在車站內推行李找路\n・避免雪地步行或地鐵尖峰擁擠', icon: '🚕', category: '交通', tags: [], mapQuery: '札幌駅北口' },
+      { time: '07:15', name: '方案二：地鐵南北線至札幌站', desc: '最準時，不受路況影響。\n\n🚶 步行至地鐵站\n・07:15 出發，步行至「幌平橋站」\n・2 月雪地路面難行，請預留充足時間\n\n🚇 搭乘地鐵\n・南北線（往麻生方向）\n・在「札幌站」下車（車程約 8 分鐘）\n\n🏢 站內動線（重要！）\n・找「北改札口」出站\n・沿「JR 線 / 札幌站北口」指示牌走\n・穿過西大通走到底\n・走出「北口」門口\n・即抵達 3 號乘車處', icon: '🚇', category: '交通', tags: [], mapQuery: '幌平橋駅' },
+      { time: '08:00', name: 'JR 巴士至手稻滑雪場', desc: '從札幌站北口 3 號乘車處搭乘 JR 巴士直達手稻滑雪場。', icon: '🚌', category: '交通', tags: [], mapQuery: 'サッポロテイネスキー場' },
+      { time: '09:30', name: '租裝備 & 滑雪課程', desc: '教練需提前 2 個月預約（Teine Ski School）。1972 冬奧場地，雪道長且可看海。', icon: '🎿', category: '活動', tags: ['必玩'], photoTip: '用 GoPro 或手機防水殼錄影' },
+      { time: '12:30', name: '雪場午餐', desc: '推薦 K-Lounge 的披薩或拉麵。', icon: '🍜', category: '食物', tags: [], mapQuery: 'テイネスキー場 レストラン' },
+      { time: '16:30', name: '下山返回市區', desc: '返回札幌市區休息。', icon: '🚃', category: '交通', tags: [] },
+      { time: '18:30', name: '溫野菜 涮涮鍋', desc: '薄野店涮涮鍋吃到飽，補充蔬菜與熱量。預算 4,000 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'しゃぶしゃぶ温野菜 すすきの店', photoTip: '火鍋食材擺盤全景照' },
+    ]
+  },
+  {
+    day: 6, date: '2/26(四)', theme: '手稻滑雪 Day2', location: '手稻滑雪場 奧林匹亞區',
+    clothing: '同 Day5 滑雪裝備，加強保暖（Highland 更高更冷）',
+    snowTip: '奧林匹亞區 海拔較高，風速強，注意防風',
+    spots: [
+      { time: '07:45', name: '第一段：前往 JR 札幌站', desc: '兩種方式擇一：\n\n🚇 地鐵\n・07:45 出發，步行至「幌平橋站」\n・搭南北線至「札幌站」下車\n・沿「JR 線」標示移動\n・札幌車站較大，預留 10 分鐘進 JR 月台\n\n🚕 計程車（10 人團體推薦）\n・07:45 分乘計程車直達 JR 札幌站\n・省力，免雪地步行', icon: '🚇', category: '交通', tags: [], mapQuery: '幌平橋駅' },
+      { time: '08:13', name: '第二段：JR 至手稻站', desc: '🚃 搭乘 JR\n・車次：08:13 往小樽／手稻方向\n・抵達：08:30「JR 手稻站」', icon: '🚃', category: '交通', tags: [], mapQuery: 'JR手稲駅' },
+      { time: '08:40', name: '第三段：接駁巴士 手70', desc: '🚌 轉乘巴士\n・下火車後往「南口」出站\n・前往 3 號乘車處\n・搭 08:40 發車的 JR 北海道巴士（手70）\n・巴士先停 Olympia 區（第一站）', icon: '🚌', category: '交通', tags: [], mapQuery: 'サッポロテイネスキー場' },
+      { time: '09:00', name: '手稻滑雪場 奧林匹亞區', desc: '抵達奧林匹亞區，開始第二天滑雪！搭纜車上山頂可俯瞰石狩灣海景。', icon: '🎿', category: '活動', tags: ['必玩'], photoTip: '山頂俯瞰石狩灣 180 度全景' },
+      { time: '16:00', name: '下山', desc: '身體痠痛者可提早回市區泡湯（推薦：極樂湯）。', icon: '🚃', category: '交通', tags: [], mapQuery: '極楽湯 札幌' },
+      { time: '18:30', name: '自由覓食', desc: '信玄拉麵、空 (Sora) 拉麵、布袋 (Hotei) 北海道炸雞、或達摩成吉思汗烤肉。', icon: '🍜', category: '食物', tags: [], mapQuery: '信玄 ラーメン 札幌' },
+    ]
+  },
+  {
+    day: 7, date: '2/27(五)', theme: '購物血拼', location: '中島公園・根室花丸・BicCamera・唐吉訶德',
+    clothing: '輕便保暖即可，室內購物為主',
+    snowTip: '購物日以室內為主，但轉場時注意路面積雪',
+    spots: [
+      { time: '10:00', name: '中島公園', desc: '民宿附近散步，參觀豐平館。冬季銀白世界非常幽靜。', icon: '⛩', category: '景點', tags: [], mapQuery: '中島公園 札幌', photoTip: '雪白公園銀杏步道如夢似幻' },
+      { time: '11:30', name: '根室花丸 迴轉壽司', desc: '札幌車站 Stellar Place。非常熱門！建議 11:00 前抽號碼牌。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '根室花まる JRタワーステラプレイス店', photoTip: '迴轉壽司的精美壽司特寫' },
+      { time: '13:30', name: 'BicCamera 電器', desc: '結帳出示 10%免稅+7%折扣券。目標：吹風機、保溫瓶、電器。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: 'ビックカメラ 札幌駅前' },
+      { time: '15:30', name: '唐吉訶德', desc: '狸小路店。滿 3 萬日圓出示免稅+折扣券。目標：藥妝、零食、伴手禮。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: 'ドン・キホーテ 狸小路' },
+      { time: '19:00', name: '蟹本家 晚餐', desc: '精緻螃蟹會席！推薦：雪蟹火鍋 ×4、炸奶油蟹可樂餅 ×4、蟹肉壽司 ×1、米粥 ×4。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'かに本家 札幌駅前本店', photoTip: '螃蟹會席全景 + 特寫蟹腿' },
+    ]
+  },
+  {
+    day: 8, date: '2/28(六)', theme: '機場衝刺', location: '新千歲機場',
+    clothing: '舒適方便穿脫即可，機場室內溫暖',
+    snowTip: '注意天氣預報確認 JR 是否正常運行',
+    spots: [
+      { time: '09:30', name: '退房 & 出發', desc: '分乘計程車至札幌站 → JR 快速 Airport 號 → 新千歲機場。', icon: '🚃', category: '交通', tags: [], mapQuery: '札幌駅' },
+      { time: '11:00', name: '抵達新千歲機場', desc: '先至國際線櫃台託運或寄放行李，再去國內線逛街。', icon: '✈️', category: '交通', tags: [] },
+      { time: '11:30', name: 'Royce 巧克力世界', desc: '國內線 3F，必買 Royce 生巧克力！', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: 'ロイズチョコレートワールド 新千歳空港', photoTip: '巧克力瀑布 + 工廠產線超好拍' },
+      { time: '12:00', name: '拉麵道場', desc: '國內線 3F，吃最後一碗拉麵！推薦：一幻鮮蝦拉麵。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '北海道ラーメン道場 新千歳空港' },
+      { time: '13:00', name: '土產店掃貨', desc: '國內線 2F：六花亭、北菓樓、LeTAO、薯條三兄弟，保鮮期最新。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: '新千歳空港 お土産' },
+      { time: '15:30', name: '安檢 & 出境', desc: '酷航 TR893 17:30 起飛。提前 2 小時辦理登機手續。', icon: '✈️', category: '交通', tags: [] },
+    ]
+  },
+];
+
+const PACKING_DATA = {
+  '隨身背包': [
+    { name: '護照', qty: 1 }, { name: '手機 + 充電線', qty: 1 }, { name: '行動電源', qty: 1 },
+    { name: '日圓現金', qty: 1 }, { name: '信用卡', qty: 1 }, { name: '口罩', qty: 5 },
+    { name: '濕紙巾', qty: 1 }, { name: '暖暖包', qty: 10 }, { name: '唇膏/護手霜', qty: 1 },
+    { name: '折疊傘', qty: 1 }, { name: '旅遊保險文件', qty: 1 },
+  ],
+  '手提行李': [
+    { name: '一套換洗衣物', qty: 1 }, { name: '盥洗用品', qty: 1 }, { name: '筆電/平板', qty: 1 },
+    { name: '相機', qty: 1 }, { name: '頸枕', qty: 1 }, { name: '耳機', qty: 1 },
+  ],
+  '托運行李': [
+    { name: '發熱衣', qty: 4 }, { name: '發熱褲', qty: 4 }, { name: '羽絨外套', qty: 1 },
+    { name: '防水雪靴', qty: 1 }, { name: '毛帽', qty: 1 }, { name: '防水手套', qty: 1 },
+    { name: '圍巾', qty: 1 }, { name: '厚襪子', qty: 5 }, { name: '一般衣褲', qty: 4 },
+    { name: '泳衣（泡湯用）', qty: 1 }, { name: '防滑冰爪', qty: 1 }, { name: '折疊購物袋', qty: 2 },
+  ],
+  '日本購物清單': [
+    { name: '白色戀人', qty: 2 }, { name: 'Royce 生巧克力', qty: 3 }, { name: '六花亭餅乾', qty: 2 },
+    { name: '北菓樓泡芙', qty: 1 }, { name: 'LeTAO 起司蛋糕', qty: 1 }, { name: '薯條三兄弟', qty: 3 },
+    { name: '馬油產品', qty: 1 }, { name: '保濕面膜', qty: 2 }, { name: '藥品/藥妝', qty: 1 },
+  ],
+};
+
+const WEATHER_DATA = [
+  { day: 1, date: '2/21', location: '札幌', high: -1, low: -6, snow: '70%', depth: '85cm', feels: -9, desc: '晚間抵達，陰有雪' },
+  { day: 2, date: '2/22', location: '札幌', high: 0, low: -5, snow: '50%', depth: '83cm', feels: -7, desc: '多雲偶雪' },
+  { day: 3, date: '2/23', location: '小樽', high: 1, low: -4, snow: '60%', depth: '90cm', feels: -8, desc: '海風凜冽，間歇降雪' },
+  { day: 4, date: '2/24', location: '札幌', high: 2, low: -3, snow: '40%', depth: '82cm', feels: -6, desc: '多雲時晴' },
+  { day: 5, date: '2/25', location: '手稻', high: -2, low: -8, snow: '80%', depth: '120cm', feels: -13, desc: '山區粉雪，滑雪最佳' },
+  { day: 6, date: '2/26', location: '手稻', high: -1, low: -7, snow: '75%', depth: '125cm', feels: -12, desc: '持續降雪，能見度中等' },
+  { day: 7, date: '2/27', location: '札幌', high: 1, low: -4, snow: '30%', depth: '80cm', feels: -6, desc: '陰天，適合購物' },
+  { day: 8, date: '2/28', location: '新千歲', high: 0, low: -5, snow: '45%', depth: '78cm', feels: -7, desc: '多雲，交通正常' },
+];
+
+const TRAVEL_RULES = [
+  { title: '🗑 垃圾分類', items: ['可燃垃圾：食物殘渣、紙巾、塑膠袋', '不可燃垃圾：金屬、玻璃、陶瓷', '資源回收：寶特瓶（蓋子分開）、鋁罐、紙類', '民宿對垃圾分類要求極嚴，請務必遵守'] },
+  { title: '🚃 電車禮儀', items: ['背包改為前背或放腳邊', '手機設靜音，避免通話', '讓座給老人、孕婦、身障者', '排隊依序上車，先下後上'] },
+  { title: '👟 室內脫鞋', items: ['進入民宿玄關務必脫鞋', '部分餐廳（榻榻米席）也需脫鞋', '穿乾淨襪子，避免尷尬'] },
+  { title: '💰 退稅規範', items: ['同一店家當日消費滿 5,000 日圓（未稅）即可退稅', '需出示護照正本', '消耗品（食品/藥妝）會被密封包裝', '離開日本前不可拆封密封袋'] },
+];
+
+const EMERGENCY_INFO = [
+  { label: '警察', number: '110', icon: '🚔' },
+  { label: '消防 / 救護車', number: '119', icon: '🚑' },
+  { label: '駐日台北經濟文化代表處', number: '+81-3-3280-7811', icon: '🏛', address: '東京都港区白金台5-20-2' },
+  { label: '旅遊急難救助（24H）', number: '+886-800-085-095', icon: '📞' },
+];
+
+const TRIP_INFO = {
+  flight: { outbound: '酷航 TR893・2/21 17:20 抵達新千歲 CTS', inbound: '酷航 TR893・2/28 17:30 起飛' },
+  hotel: { name: 'Gyokeidori Luxury House', address: '札幌市南14条西6丁目', note: '近市電「行啟通」站' },
+  car: '自駕租車憑證（請確認雲端文件）',
+  apps: ['GO / Uber：叫車', 'Japan Travel by NAVITIME：查 JR 班次', 'Google Maps：導航'],
+};
+
+// ============================================================
+// COMPONENTS
+// ============================================================
+
+// Snow particles (static data outside component to avoid re-randomizing on re-render)
+const SNOW_FLAKES = Array.from({ length: 12 }, (_, i) => ({
+  id: i,
+  left: Math.random() * 100,
+  delay: Math.random() * 8,
+  duration: 8 + Math.random() * 6,
+  size: 10 + Math.random() * 10,
+}));
+
+const DAY_EMOJIS = { 3: '🐧', 5: '🎿', 6: '🎿', 8: '✈️' };
+
+function SnowParticles() {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0">
+      {SNOW_FLAKES.map(f => (
+        <div key={f.id} className="snowflake" style={{
+          left: f.left + '%', animationDelay: f.delay + 's', animationDuration: f.duration + 's', fontSize: f.size + 'px',
+        }}>❄</div>
+      ))}
+    </div>
+  );
+}
+
+// Header
+function Header() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 glass-dark text-white px-4 py-3 shadow-lg">
+      <div className="max-w-lg mx-auto flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-bold tracking-wide">❄️ 北海道雪季自由行</h1>
+          <p className="text-xs opacity-80 mt-0.5">2026/02/21 - 02/28 ・ 8天7夜</p>
+        </div>
+        <div className="text-3xl">⛩</div>
+      </div>
+    </header>
+  );
+}
+
+// Bottom Tab Bar
+function TabBar({ activeTab, onTabChange }) {
+  const tabs = [
+    { id: 'itinerary', icon: '🗓', label: '行程' },
+    { id: 'guide', icon: '📋', label: '指南' },
+    { id: 'weather', icon: '🌨', label: '天氣' },
+  ];
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-200/50 shadow-lg">
+      <div className="max-w-lg mx-auto flex">
+        {tabs.map(tab => (
+          <button key={tab.id} onClick={() => onTabChange(tab.id)}
+            className={`flex-1 flex flex-col items-center py-2.5 btn-press transition-colors ${
+              activeTab === tab.id ? 'text-fuji' : 'text-warmgray'
+            }`}>
+            <span className="text-xl">{tab.icon}</span>
+            <span className={`text-xs mt-0.5 font-medium ${activeTab === tab.id ? 'text-fuji' : ''}`}>{tab.label}</span>
+            {activeTab === tab.id && <div className="w-6 h-0.5 bg-fuji rounded-full mt-1" />}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+// Tag component
+function Tag({ label }) {
+  const colors = {
+    '必吃': 'bg-yuzu/20 text-yuzu border-yuzu/30',
+    '必買': 'bg-matcha/20 text-matcha border-matcha/30',
+    '必拍': 'bg-sakura/20 text-sakura border-sakura/30',
+    '必玩': 'bg-fuji/20 text-fuji border-fuji/30',
+  };
+  return (
+    <span className={`inline-block text-xs px-2 py-0.5 rounded-full border font-medium ${colors[label] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
+      {label}
+    </span>
+  );
+}
+
+// Spot Card
+function SpotCard({ spot }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const categoryColors = {
+    '食物': 'border-l-yuzu', '活動': 'border-l-fuji', '購物': 'border-l-matcha',
+    '景點': 'border-l-sakura', '酒店': 'border-l-purple-400', '交通': 'border-l-warmgray',
+  };
+
+  return (
+    <div className={`bg-white rounded-2xl shadow-md border-l-4 ${categoryColors[spot.category] || 'border-l-gray-300'} overflow-hidden transition-all duration-300 btn-press`}
+      onClick={() => setExpanded(!expanded)}>
+      <div className="p-3.5">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm text-warmgray font-medium">{spot.time}</span>
+              <span className="text-lg">{spot.icon}</span>
+              {spot.tags.map(t => <Tag key={t} label={t} />)}
+            </div>
+            <h4 className="font-bold text-gray-800 text-sm">{spot.name}</h4>
+          </div>
+          <span className={`text-warmgray text-xs transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}>▼</span>
+        </div>
+
+        {expanded && (
+          <div className="mt-3 fade-in">
+            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{spot.desc}</p>
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              {spot.mapQuery && (
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.mapQuery)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs bg-fuji/10 text-fuji px-3 py-1.5 rounded-full font-medium btn-press"
+                  onClick={e => e.stopPropagation()}>
+                  📍 導航
+                </a>
+              )}
+            </div>
+
+            {spot.photoTip && (
+              <div className="mt-2 p-2 bg-sakura/10 rounded-xl">
+                <p className="text-xs text-sakura font-medium">📸 {spot.photoTip}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Nearby Meals component
+const MEAL_TYPE_LABELS = { lunch: '午餐', dinner: '晚餐', dinner2: '晚餐備案', dessert: '甜點 / 下午茶', late_night: '深夜甜點' };
+
+function NearbyMeals({ dayNum }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const dayMeals = MEALS_DATA[String(dayNum)];
+  if (!dayMeals) return null;
+
+  const mealEntries = Object.entries(dayMeals);
+  if (mealEntries.length === 0) return null;
+
+  return (
+    <div className="mt-4 bg-white rounded-2xl shadow-md border-l-4 border-l-yuzu overflow-hidden">
+      <button onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between p-4 btn-press">
+        <span className="font-bold text-gray-800 text-sm flex items-center gap-2">🍽 附近美食選擇</span>
+        <span className={`text-warmgray text-xs transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}>▼</span>
+      </button>
+      {expanded && (
+        <div className="px-4 pb-4 fade-in">
+          {mealEntries.map(([type, meal]) => (
+              <div key={type} className="mb-4 last:mb-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-fuji bg-fuji/10 px-2 py-0.5 rounded-full">{MEAL_TYPE_LABELS[type] || type}</span>
+                  <span className="text-xs text-warmgray">{meal.area}</span>
+                </div>
+                <div className="space-y-2">
+                  {meal.picks.map((pick, i) => (
+                    <div key={i} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium text-gray-800">{pick.name}</span>
+                          {pick.tag && <span className="text-xs bg-yuzu/20 text-yuzu border border-yuzu/30 px-1.5 py-0.5 rounded-full font-medium">{pick.tag}</span>}
+                        </div>
+                        <p className="text-xs text-warmgray mt-0.5">{pick.note}</p>
+                      </div>
+                      {pick.mapQuery && (
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pick.mapQuery)}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex-shrink-0 ml-2 w-8 h-8 bg-fuji/10 text-fuji rounded-full flex items-center justify-center btn-press"
+                          onClick={e => e.stopPropagation()}>
+                          📍
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// TAB: ITINERARY
+// ============================================================
+function ItineraryTab() {
+  const [selectedDay, setSelectedDay] = useState(1);
+  const scrollRef = useRef(null);
+  const dayData = TRIP_DAYS.find(d => d.day === selectedDay);
+
+  useEffect(() => {
+    const btn = scrollRef.current?.children[selectedDay - 1];
+    btn?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [selectedDay]);
+
+  return (
+    <div className="fade-in">
+      {/* Day selector */}
+      <div className="sticky top-[60px] z-30 glass py-3 px-2 -mx-4">
+        <div className="day-scroll flex gap-2 px-2" ref={scrollRef}>
+          {TRIP_DAYS.map(d => (
+            <button key={d.day} onClick={() => setSelectedDay(d.day)}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium btn-press transition-all whitespace-nowrap ${
+                selectedDay === d.day
+                  ? 'bg-fuji text-white shadow-md shadow-fuji/30'
+                  : 'bg-white text-gray-600 shadow-sm hover:bg-fuji/5'
+              }`}>
+              <span className="block text-xs opacity-75">{d.date}</span>
+              <span>Day {d.day}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Day content */}
+      {dayData && (
+        <div className="mt-4 slide-up" key={selectedDay}>
+          {/* Day header */}
+          <div className="bg-gradient-to-r from-fuji to-fuji-dark text-white rounded-2xl p-4 mb-4 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs opacity-80">Day {dayData.day} ・ {dayData.date}</p>
+                <h3 className="text-xl font-bold mt-1">{dayData.theme}</h3>
+                <p className="text-sm opacity-80 mt-1">📍 {dayData.location}</p>
+              </div>
+              <div className="text-4xl">{DAY_EMOJIS[dayData.day] || '❄️'}</div>
+            </div>
+          </div>
+
+          {/* Spots */}
+          <div className="space-y-3">
+            {dayData.spots.map((spot, idx) => (
+              <SpotCard key={`${selectedDay}-${spot.time}-${spot.name}`} spot={spot} />
+            ))}
+          </div>
+
+          {/* Nearby Meals */}
+          <NearbyMeals dayNum={selectedDay} />
+
+          {/* Clothing & Snow */}
+          <div className="mt-4 bg-white rounded-2xl shadow-md p-4">
+            <h4 className="font-bold text-gray-800 text-sm flex items-center gap-2">👗 建議穿著 & 雪況</h4>
+            <p className="text-sm text-gray-600 mt-2">🧥 {dayData.clothing}</p>
+            <p className="text-sm text-gray-600 mt-1">🌨 {dayData.snowTip}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// TAB: GUIDE
+// ============================================================
+function PackingList() {
+  const [activeCategory, setActiveCategory] = useState('隨身背包');
+  const [items, setItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('packing_items');
+      return saved ? JSON.parse(saved) : Object.fromEntries(
+        Object.entries(PACKING_DATA).map(([cat, list]) => [cat, list.map(item => ({ ...item, checked: false }))])
+      );
+    } catch {
+      return Object.fromEntries(
+        Object.entries(PACKING_DATA).map(([cat, list]) => [cat, list.map(item => ({ ...item, checked: false }))])
+      );
+    }
+  });
+  const [newItemName, setNewItemName] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem('packing_items', JSON.stringify(items));
+      } catch (err) {
+        console.warn('Failed to save packing list:', err);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [items]);
+
+  const toggleCheck = (idx) => {
+    const updated = { ...items, [activeCategory]: items[activeCategory].map((item, i) =>
+      i === idx ? { ...item, checked: !item.checked } : item
+    )};
+    setItems(updated);
+  };
+
+  const adjustQty = (idx, delta) => {
+    const updated = { ...items, [activeCategory]: items[activeCategory].map((item, i) =>
+      i === idx ? { ...item, qty: Math.max(0, item.qty + delta) } : item
+    )};
+    setItems(updated);
+  };
+
+  const addItem = () => {
+    if (!newItemName.trim()) return;
+    const updated = { ...items, [activeCategory]: [...items[activeCategory], { name: newItemName.trim(), qty: 1, checked: false }] };
+    setItems(updated);
+    setNewItemName('');
+  };
+
+  const removeItem = (idx) => {
+    const updated = { ...items, [activeCategory]: items[activeCategory].filter((_, i) => i !== idx) };
+    setItems(updated);
+  };
+
+  const categories = Object.keys(items);
+  const currentItems = items[activeCategory] || [];
+  const checkedCount = currentItems.filter(i => i.checked).length;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      {/* Category tabs */}
+      <div className="day-scroll flex border-b border-gray-100">
+        {categories.map(cat => (
+          <button key={cat} onClick={() => setActiveCategory(cat)}
+            className={`flex-shrink-0 px-4 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
+              activeCategory === cat ? 'text-fuji border-b-2 border-fuji bg-fuji/5' : 'text-warmgray'
+            }`}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Progress */}
+      <div className="px-4 pt-3">
+        <div className="flex items-center justify-between text-xs text-warmgray mb-1">
+          <span>{checkedCount}/{currentItems.length} 已完成</span>
+          <span>{currentItems.length > 0 ? Math.round(checkedCount / currentItems.length * 100) : 0}%</span>
+        </div>
+        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-fuji to-matcha rounded-full transition-all duration-500"
+            style={{ width: `${currentItems.length > 0 ? (checkedCount / currentItems.length * 100) : 0}%` }} />
+        </div>
+      </div>
+
+      {/* Items */}
+      <div className="p-4 space-y-2">
+        {currentItems.map((item, idx) => (
+          <div key={idx} className={`flex items-center gap-3 p-2.5 rounded-xl transition-colors ${item.checked ? 'bg-matcha/10' : 'bg-gray-50'}`}>
+            <input type="checkbox" checked={item.checked} onChange={() => toggleCheck(idx)} className="custom-check" />
+            <span className={`flex-1 text-sm ${item.checked ? 'line-through text-warmgray' : 'text-gray-700'}`}>{item.name}</span>
+            <div className="flex items-center gap-1">
+              <button onClick={() => adjustQty(idx, -1)} className="w-7 h-7 rounded-full bg-gray-200 text-gray-600 text-sm flex items-center justify-center btn-press">−</button>
+              <span className="text-sm font-medium w-6 text-center">{item.qty}</span>
+              <button onClick={() => adjustQty(idx, 1)} className="w-7 h-7 rounded-full bg-fuji/10 text-fuji text-sm flex items-center justify-center btn-press">+</button>
+            </div>
+            <button onClick={() => removeItem(idx)} className="text-red-400 text-lg btn-press ml-1">×</button>
+          </div>
+        ))}
+
+        {/* Add new item */}
+        <div className="flex gap-2 mt-3">
+          <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)}
+            placeholder="新增項目..." onKeyDown={e => e.key === 'Enter' && addItem()}
+            className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-fuji focus:ring-1 focus:ring-fuji/30" />
+          <button onClick={addItem} className="px-4 py-2 bg-fuji text-white rounded-xl text-sm font-medium btn-press shadow-md shadow-fuji/20">新增</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GuideTab() {
+  const [openSection, setOpenSection] = useState(null);
+  const toggle = (id) => setOpenSection(openSection === id ? null : id);
+
+  return (
+    <div className="fade-in space-y-4">
+      {/* Packing List */}
+      <div>
+        <button onClick={() => toggle('packing')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">🧳 行李打包清單</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'packing' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'packing' && <div className="mt-2 fade-in"><PackingList /></div>}
+      </div>
+
+      {/* Travel Rules */}
+      <div>
+        <button onClick={() => toggle('rules')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">🇯🇵 日本旅遊規範</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'rules' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'rules' && (
+          <div className="mt-2 space-y-3 fade-in">
+            {TRAVEL_RULES.map((rule, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-md p-4">
+                <h4 className="font-bold text-sm text-gray-800 mb-2">{rule.title}</h4>
+                <ul className="space-y-1.5">
+                  {rule.items.map((item, j) => (
+                    <li key={j} className="text-sm text-gray-600 flex items-start gap-2">
+                      <span className="text-fuji mt-0.5">•</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Emergency */}
+      <div>
+        <button onClick={() => toggle('emergency')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">🆘 緊急資訊</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'emergency' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'emergency' && (
+          <div className="mt-2 space-y-2 fade-in">
+            {EMERGENCY_INFO.map((info, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-md p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{info.icon}</span>
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{info.label}</p>
+                    {info.address && <p className="text-xs text-warmgray mt-0.5">{info.address}</p>}
+                  </div>
+                </div>
+                <a href={`tel:${info.number}`}
+                  className="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold btn-press shadow-md shadow-red-500/30 flex items-center gap-1">
+                  📞 {info.number}
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Trip Info */}
+      <div>
+        <button onClick={() => toggle('info')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">📂 資料總匯</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'info' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'info' && (
+          <div className="mt-2 bg-white rounded-2xl shadow-md p-4 space-y-4 fade-in">
+            {/* Flight */}
+            <div>
+              <h4 className="font-bold text-sm text-gray-800 flex items-center gap-2 mb-2">✈️ 航班資訊</h4>
+              <div className="space-y-1.5 text-sm text-gray-600">
+                <p>🛫 去程：{TRIP_INFO.flight.outbound}</p>
+                <p>🛬 回程：{TRIP_INFO.flight.inbound}</p>
+              </div>
+            </div>
+            {/* Hotel */}
+            <div>
+              <h4 className="font-bold text-sm text-gray-800 flex items-center gap-2 mb-2">🏨 住宿</h4>
+              <div className="text-sm text-gray-600 space-y-1">
+                <p className="font-medium">{TRIP_INFO.hotel.name}</p>
+                <p>{TRIP_INFO.hotel.address}</p>
+                <p className="text-xs text-warmgray">{TRIP_INFO.hotel.note}</p>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(TRIP_INFO.hotel.name + ' ' + TRIP_INFO.hotel.address)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs bg-fuji/10 text-fuji px-3 py-1.5 rounded-full font-medium mt-1">
+                  📍 查看地圖
+                </a>
+              </div>
+            </div>
+            {/* Apps */}
+            <div>
+              <h4 className="font-bold text-sm text-gray-800 flex items-center gap-2 mb-2">📱 必備 APP</h4>
+              <ul className="space-y-1">
+                {TRIP_INFO.apps.map((app, i) => (
+                  <li key={i} className="text-sm text-gray-600 flex items-start gap-2"><span className="text-fuji">•</span>{app}</li>
+                ))}
+              </ul>
+            </div>
+            {/* IC Card */}
+            <div>
+              <h4 className="font-bold text-sm text-gray-800 flex items-center gap-2 mb-2">💳 交通卡</h4>
+              <p className="text-sm text-gray-600">必備 Kitaca 或 iPhone Suica/Pasmo。可搭 JR、地鐵、市電、巴士，也能在便利商店付款。</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// TAB: WEATHER
+// ============================================================
+const WMO_CODES = {
+  0: { icon: '☀️', desc: '晴天' }, 1: { icon: '☀️', desc: '大致晴朗' },
+  2: { icon: '⛅', desc: '多雲' }, 3: { icon: '☁️', desc: '陰天' },
+  45: { icon: '🌫', desc: '霧' }, 48: { icon: '🌫', desc: '霧凇' },
+  51: { icon: '🌧', desc: '小雨' }, 53: { icon: '🌧', desc: '中雨' }, 55: { icon: '🌧', desc: '大雨' },
+  56: { icon: '🌧', desc: '凍雨' }, 57: { icon: '🌧', desc: '凍雨' },
+  61: { icon: '🌧', desc: '小雨' }, 63: { icon: '🌧', desc: '中雨' }, 65: { icon: '🌧', desc: '大雨' },
+  66: { icon: '🌧', desc: '凍雨' }, 67: { icon: '🌧', desc: '凍雨' },
+  71: { icon: '🌨', desc: '小雪' }, 73: { icon: '🌨', desc: '中雪' }, 75: { icon: '🌨', desc: '大雪' },
+  77: { icon: '🌨', desc: '雪粒' },
+  80: { icon: '🌧', desc: '陣雨' }, 81: { icon: '🌧', desc: '陣雨' }, 82: { icon: '🌧', desc: '大陣雨' },
+  85: { icon: '🌨', desc: '陣雪' }, 86: { icon: '🌨', desc: '大陣雪' },
+  95: { icon: '⛈', desc: '雷雨' }, 96: { icon: '⛈', desc: '冰雹雷雨' }, 99: { icon: '⛈', desc: '冰雹雷雨' },
+};
+
+const TENKI_LINKS = {
+  '札幌': 'https://tenki.jp/forecast/1/2/1400/1100/',
+  '小樽': 'https://tenki.jp/forecast/1/2/1600/1203/',
+  '手稻': 'https://tenki.jp/forecast/1/2/1400/1100/',
+  '新千歲': 'https://tenki.jp/forecast/1/2/1400/1100/',
+};
+
+function getClothingAdvice(dayNum, high, low) {
+  if (dayNum === 5 || dayNum === 6) return '滑雪全套裝備 + 護目鏡 + 防水手套';
+  const avg = (high + low) / 2;
+  if (avg <= -8) return '羽絨衣 + 發熱衣 + 雪靴 + 毛帽 + 圍巾 + 暖暖包';
+  return '長版羽絨外套 + 發熱衣 + 防滑鞋 + 暖暖包';
+}
+
+function WeatherTab() {
+  const [liveWeather, setLiveWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=43.06&longitude=141.35&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,snowfall_sum,wind_speed_10m_max,weather_code&timezone=Asia/Tokyo&start_date=2026-02-21&end_date=2026-02-28';
+    fetch(url)
+      .then(res => { if (!res.ok) throw new Error('API error'); return res.json(); })
+      .then(data => {
+        const days = data.daily.time.map((date, i) => ({
+          day: i + 1,
+          date: date.slice(5).replace('-', '/'),
+          location: WEATHER_DATA[i]?.location || '札幌',
+          high: Math.round(data.daily.temperature_2m_max[i]),
+          low: Math.round(data.daily.temperature_2m_min[i]),
+          precipProb: data.daily.precipitation_probability_max[i],
+          snowfall: data.daily.snowfall_sum[i],
+          windSpeed: Math.round(data.daily.wind_speed_10m_max[i]),
+          weatherCode: data.daily.weather_code[i],
+        }));
+        setLiveWeather(days);
+        setLoading(false);
+      })
+      .catch(() => { setError(true); setLoading(false); });
+  }, []);
+
+  const weatherCards = liveWeather || WEATHER_DATA.map(w => ({
+    day: w.day, date: w.date, location: w.location,
+    high: w.high, low: w.low,
+    precipProb: parseInt(w.snow), snowfall: null, windSpeed: null,
+    weatherCode: null, fallback: true,
+    feels: w.feels, depth: w.depth, desc: w.desc,
+  }));
+
+  return (
+    <div className="fade-in space-y-4">
+      {loading && (
+        <div className="bg-white rounded-2xl shadow-md p-8 text-center">
+          <div className="animate-spin text-3xl mb-2">🌨</div>
+          <p className="text-sm text-warmgray">正在取得即時天氣資料...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-yuzu/10 border border-yuzu/30 rounded-2xl p-3 text-center">
+          <p className="text-xs text-yuzu font-medium">無法連線天氣 API，顯示預估資料</p>
+        </div>
+      )}
+
+      {!loading && weatherCards.map(w => {
+        const wmo = WMO_CODES[w.weatherCode] || { icon: '🌨', desc: w.desc || '---' };
+        const tenkiUrl = TENKI_LINKS[w.location] || TENKI_LINKS['札幌'];
+
+        return (
+          <div key={w.day} className="bg-white rounded-2xl shadow-md overflow-hidden">
+            <div className="bg-gradient-to-r from-fuji/10 to-transparent p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-warmgray font-medium">Day {w.day} ・ {w.date}</p>
+                  <h4 className="font-bold text-gray-800 mt-0.5">{w.location}</h4>
+                  <p className="text-xs text-warmgray mt-1">{wmo.icon} {w.fallback ? w.desc : wmo.desc}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl">{wmo.icon}</p>
+                  <p className="text-2xl font-bold text-fuji">{w.high}°</p>
+                  <p className="text-sm text-warmgray">{w.low}°C</p>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 p-3">
+              <div className="text-center p-2 bg-blue-50 rounded-xl">
+                <p className="text-lg">🌧</p>
+                <p className="text-xs text-warmgray mt-0.5">降水機率</p>
+                <p className="text-sm font-bold text-gray-700">{w.precipProb != null ? w.precipProb + '%' : '---'}</p>
+              </div>
+              <div className="text-center p-2 bg-blue-50 rounded-xl">
+                <p className="text-lg">❄️</p>
+                <p className="text-xs text-warmgray mt-0.5">降雪量</p>
+                <p className="text-sm font-bold text-gray-700">{w.snowfall != null ? w.snowfall.toFixed(1) + 'cm' : (w.depth || '---')}</p>
+              </div>
+              <div className="text-center p-2 bg-blue-50 rounded-xl">
+                <p className="text-lg">💨</p>
+                <p className="text-xs text-warmgray mt-0.5">最大風速</p>
+                <p className="text-sm font-bold text-gray-700">{w.windSpeed != null ? w.windSpeed + 'km/h' : (w.feels != null ? w.feels + '°C 體感' : '---')}</p>
+              </div>
+            </div>
+            <div className="px-4 pb-3 space-y-2">
+              <p className="text-xs text-gray-500">👗 穿著建議：{getClothingAdvice(w.day, w.high, w.low)}</p>
+              <a href={tenkiUrl} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs bg-fuji/10 text-fuji px-3 py-1.5 rounded-full font-medium btn-press">
+                🔗 查看 tenki.jp 詳細預報
+              </a>
+            </div>
+          </div>
+        );
+      })}
+
+      {!loading && !liveWeather && (
+        <p className="text-xs text-center text-warmgray">* 以上為出發前預估資料，實際天氣請以即時預報為準</p>
+      )}
+
+      {/* SVG Route Map */}
+      <div className="bg-white rounded-2xl shadow-md p-4">
+        <h4 className="font-bold text-gray-800 text-sm flex items-center gap-2 mb-3">🗺 路線地圖</h4>
+        <svg viewBox="0 0 400 320" className="w-full" xmlns="http://www.w3.org/2000/svg">
+          {/* Hokkaido outline (simplified) */}
+          <path d="M80,60 Q100,30 150,25 Q200,20 250,30 Q300,40 340,70 Q360,90 355,130 Q350,160 330,180 Q310,200 280,210 Q260,220 240,230 Q220,250 200,260 Q180,270 150,260 Q120,250 100,230 Q80,210 70,180 Q60,150 65,120 Q68,90 80,60 Z"
+            fill="#E8F4FD" stroke="#4A6FA5" strokeWidth="2" />
+
+          {/* Route lines */}
+          <path d="M200,150 L130,120" stroke="#4A6FA5" strokeWidth="2" strokeDasharray="6,3" fill="none" />
+          <path d="M200,150 L250,100" stroke="#4A6FA5" strokeWidth="2" strokeDasharray="6,3" fill="none" />
+          <path d="M200,150 L180,200" stroke="#4A6FA5" strokeWidth="2" strokeDasharray="6,3" fill="none" />
+          <path d="M200,150 L280,170" stroke="#4A6FA5" strokeWidth="2" strokeDasharray="6,3" fill="none" />
+
+          {/* City markers */}
+          {[
+            { x: 200, y: 150, label: '札幌', emoji: '🏠', main: true },
+            { x: 130, y: 120, label: '小樽', emoji: '🐧' },
+            { x: 250, y: 100, label: '手稻', emoji: '🎿' },
+            { x: 280, y: 170, label: '新千歲', emoji: '✈️' },
+            { x: 180, y: 200, label: '藻岩山', emoji: '🌃' },
+          ].map((city, i) => (
+            <g key={i}>
+              <circle cx={city.x} cy={city.y} r={city.main ? 12 : 8} fill={city.main ? '#4A6FA5' : '#E8A0BF'} stroke="white" strokeWidth="2" />
+              <text x={city.x} y={city.y + 4} textAnchor="middle" fontSize="10" fill="white">{city.emoji}</text>
+              <text x={city.x} y={city.y + (city.main ? 24 : 20)} textAnchor="middle" fontSize="11" fill="#333" fontWeight="bold" fontFamily="Zen Maru Gothic">{city.label}</text>
+            </g>
+          ))}
+
+          {/* Snow decoration */}
+          {[{ x: 100, y: 60 }, { x: 300, y: 50 }, { x: 320, y: 140 }, { x: 90, y: 190 }, { x: 240, y: 240 }].map((s, i) => (
+            <text key={i} x={s.x} y={s.y} fontSize="14" opacity="0.4">❄️</text>
+          ))}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App() {
+  const [activeTab, setActiveTab] = useState('itinerary');
+
+  return (
+    <div className="min-h-screen pb-24 pt-16">
+      <SnowParticles />
+      <Header />
+      <main className="max-w-lg mx-auto px-4 pt-4 relative z-10">
+        {activeTab === 'itinerary' && <ItineraryTab />}
+        {activeTab === 'guide' && <GuideTab />}
+        {activeTab === 'weather' && <WeatherTab />}
+      </main>
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
