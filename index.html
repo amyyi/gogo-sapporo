@@ -25,6 +25,8 @@ tailwind.config = {
         sakura: '#E8A0BF',
         matcha: '#7DB9A5',
         yuzu: '#F4A261',
+        alert: '#DC2626',
+        'alert-soft': '#FEF2F2',
       },
       fontFamily: {
         zen: ['Zen Maru Gothic', 'sans-serif'],
@@ -72,6 +74,12 @@ body { background: #F8F9FA; overflow-x: hidden; }
   animation: snowfall linear infinite; pointer-events: none; z-index: 0; opacity: 0.5;
   text-shadow: 0 0 3px rgba(74,111,165,0.3);
 }
+
+/* Alert animations */
+@keyframes alertPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes alertSlide { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.alert-pulse { animation: alertPulse 2s ease-in-out infinite; }
+.alert-slide { animation: alertSlide 0.3s ease-out; }
 </style>
 </head>
 <body class="snow-bg">
@@ -91,26 +99,27 @@ const TRIP_DAYS = [
     snowTip: '抵達時約 -3°C，機場到市區注意保暖',
     spots: [
       { time: '17:20', name: '抵達新千歲機場 (CTS)', desc: '酷航 TR893 抵達。入境、領行李後選擇以下任一方案前往民宿。兩方案抵達時間相近，依現場狀況擇一即可。', icon: '✈️', category: '交通', tags: [] },
-      { time: '18:25', name: '方案 A：機場巴士直達', desc: '直達民宿旁站牌，免轉乘，行李免扛。\n\n💰 車資：1,300 日圓/人（刷 IC 卡）\n🚌 車種：札幌都心行き（經由中島公園）\n📦 行李：下層大型行李艙，司機協助搬運\n\n🚏 搭車位置\n・國內線 14 號站牌（JAL 側）\n・國內線 22 號站牌（ANA 側）\n・國際線 84 號站牌\n→ 若 84 號排隊超過 15 人，建議走到國內線 22 號（發車起點，優先上車）\n\n🚶 如何走到國內線\n・從國際線 2F 抵達大廳出發\n・沿「國內線 Domestic Terminal」標示走\n・通過 Smile Road 連通廊道（室內、有自動步道）\n・到國內線後搭扶梯下 1F\n・全程約 8-10 分鐘\n\n⏰ 推薦班次（國內線發車）\n・18:25 ← 首選\n・18:40\n・18:55\n・19:10（末班備選）\n\n🔖 下車站：南14條行啟通（南14条行啓通）\n→ 下車後步行 2-3 分鐘到民宿', icon: '🚌', category: '交通', tags: [], mapQuery: '新千歳空港 国内線バスのりば' },
-      { time: '18:30', name: '方案 B：JR + 計程車', desc: '在地人與商務客最常用的快速方案。\n\n🚃 第一步：JR 快速 Airport 號\n・乘車地點：機場地下 1F JR 新千歲機場站\n・班次：每 12 分鐘一班，推薦 18:30\n・車程：約 40 分鐘，19:10 抵達 JR 札幌站\n・車資：1,150 日圓（指定席另加 840 日圓）\n\n🚕 第二步：札幌站搭計程車\n・下車後沿「南出口」或「大通公園」指標走\n・乘手扶梯至地面 1F 即到南口\n・出站走「南口」→ 計程車排班站\n　（靠近大丸百貨與東急百貨方向，規模最大）\n・給司機看地址：「南14条西6丁目」\n　或說靠近「行啓通（Gyo-kei-dori）」\n・車程：約 10-15 分鐘\n・車資：約 1,800-2,500 日圓/台\n　（夜間可能加成）\n・10 人分乘 3 台計程車', icon: '🚃', category: '交通', tags: [], mapQuery: '新千歳空港駅' },
+      { time: '18:25', name: '方案 A：機場巴士直達', desc: '直達民宿旁站牌，免轉乘，行李免扛。\n\n💰 車資：1,300 日圓/人（刷 IC 卡）\n🚌 車種：札幌都心行き（經由中島公園）\n📦 行李：下層大型行李艙，司機協助搬運\n\n🚏 搭車位置\n・國內線 14 號站牌（JAL 側）\n・國內線 22 號站牌（ANA 側）\n・國際線 84 號站牌\n→ 若 84 號排隊超過 15 人，建議走到國內線 22 號（發車起點，優先上車）\n\n🚶 如何走到國內線\n\n1️⃣ 入境後的關鍵位置\n當您從國際線 2 樓抵達大廳（Arrival Lobby）出來後，請直接尋找位於大廳中央或兩側的「垂直移動工具」：\n・手扶梯/電梯：在大廳明顯處會有標示「國內線航廈 / JR 線 (Domestic Terminal / JR Line)」\n・方向指示：跟著藍色或綠色的指標往 3 樓（3F）移動\n\n2️⃣ 抵達 3 樓：連通廊道的入口\n到達 3 樓後，您會看到寬敞的入口，這裡就是通往 Smile Road 的起點。\n・視覺特徵：這裡的指標會變得很活潑，常有多啦A夢或 Royce\' 巧克力的裝飾\n・自動步道：進入廊道後，前方會出現長長的自動步道（Moving Walkway）\n\n3️⃣ 從 2 樓降至 1 樓\n當您從 Smile Road 走到底抵達國內線航廈時，您會位於 2 樓（購物與出境層）。\n・請尋找航廈中央附近的手扶梯或電梯，往 1 樓（到達大廳 / 到着ロビー）下樓\n・14 號站牌靠近國內線航廈的北側（靠近 ANA 側）\n\n4️⃣ 前往 14 號站牌\n到達 1 樓後，請走出 4 號門（Gate 4）或 5 號門（Gate 5）。\n・走出大門後就是巴士候車區\n・14 號站牌用於往札幌市內方向（經由大通、薄野）的機場接駁巴士（Chuo Bus 或 Hokuto Kotsu）\n\n・全程約 8-10 分鐘\n\n⏰ 推薦班次（國內線發車）\n・18:25 ← 首選\n・18:40\n・18:55\n・19:10（末班備選）\n\n🔖 下車站：南14條行啟通（南14条行啓通）\n→ 下車後步行 2-3 分鐘到民宿', icon: '🚌', category: '交通', tags: [], mapQuery: '新千歳空港 国内線バスのりば' },
+      { time: '18:30', name: '方案 B：JR + 計程車', desc: '在地人與商務客最常用的快速方案，專為 10 人團體設計。\n\n✈️ 第一步：如何從機場國際線抵達 JR 車站 (B1F)\n\n1️⃣ 抵達國際線 2 樓\n入境後，您會位於國際線航廈的 2 樓（入境大廳）。\n\n2️⃣ 上至 3 樓\n尋找大廳中央的電梯或手扶梯，往上移動到 3 樓。\n\n3️⃣ 進入 Smile Road（連通廊道）\n跟著「國內線航廈 / JR 線 (Domestic Terminal / JR Line)」的藍色標示前進。\n・這段長廊設有自動步道，會經過多啦A夢區與巧克力工廠\n\n4️⃣ 抵達國內線 2 樓\n走完連通廊道後，即進入國內線航廈。\n\n5️⃣ 下至地下 1 樓（B1F）\n在國內線大廳中央，搭乘長型手扶梯或電梯直接下到地下一樓。\n\n6️⃣ 抵達 JR 車站\n下到 B1F 後，正前方即是 JR 新千歲機場站的改札口（檢票口）。\n\n🎫 第二步：購買 u-seat（指定席）票券\n\n為確保 10 人都有位子坐並放置行李，建議購買 u-seat（指定席）：\n\n・售票口位置：\n　自動售票機：位於改札口的左側與右側，可直接購買乘車券與指定席券\n　人工服務：改札口左側設有「JR 外籍旅客服務中心」與人工售票櫃檯（綠色窗口），10 人票券可一次處理\n・票價資訊：\n　乘車券 1,150 日圓 + u-seat 指定席券 840 日圓 = 每人總計 1,990 日圓\n\n🚃 第三步：搭乘 JR 快速 Airport 號\n\n・班次：每 12 分鐘一班，推薦搭乘 18:30 班次\n・車程：約 40 分鐘，預計 19:10 抵達 JR 札幌站\n・搭乘提醒：u-seat 通常位於列車的 4 號車廂，請在月台對應位置排隊上車\n\n🚕 第四步：從札幌站搭計程車前往民宿\n\n・抵達札幌站後：\n　1. 沿「南出口」或「大通公園」指標走\n　2. 乘手扶梯至地面 1F 即抵達南口\n　3. 出站後前往南口計程車排班站（靠近大丸百貨與東急百貨方向，規模最大）\n・告知司機：\n　地址：「南14条西6丁目」\n　或說靠近：「行啓通（Gyo-kei-dori）」\n・團體策略：\n　10 人分乘 3 台計程車（每台約載 3-4 人及行李）\n　車程：約 10-15 分鐘\n　車資：每台約 1,800-2,500 日圓（夜間 22:00 後可能加成）\n\n💡 溫馨提醒：民宿位於行啟通（Gyokeidori）區域。第一晚抵達時間較晚（約 20:53 入住），若感到飢餓，民宿附近有 Sandria 24 小時三明治店是非常好的宵夜選擇。', icon: '🚃', category: '交通', tags: [], mapQuery: '新千歳空港駅' },
       { time: '19:40', name: 'Gyokeidori Luxury House', desc: 'Check-in，放置行李，確認暖氣運作。兩方案抵達時間相近，皆約 19:40 前後到達。', icon: '🏨', category: '酒店', tags: [], mapQuery: 'Gyokeidori Luxury House 札幌' },
       { time: '20:30', name: '元祖札幌拉麵橫丁', desc: '推薦：白樺山莊（味噌）、弟子屈（醬油）。請分組 2-4 人自由選擇店家。預算 1,200 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '元祖さっぽろラーメン横丁', photoTip: '拍攝霓虹燈巷弄 + 熱騰騰拉麵特寫' },
       { time: '22:00', name: 'Seicomart 採買', desc: '民宿附近超商採買隔日早餐、大瓶水、下酒菜。推薦 Hot Chef 現做炸雞丼。', icon: '🛍', category: '購物', tags: [], mapQuery: 'セイコーマート 南14条' },
     ]
   },
   {
-    day: 2, date: '2/22(日)', theme: '和服街拍巡禮', location: '美月櫻・狸小路・大通・北海道神宮・白色戀人',
-    clothing: '和服內搭發熱衣褲、暖暖包貼背部與腳底、防滑草履或雪靴（視店家提供）',
-    snowTip: '和服較薄，務必內搭保暖。移動建議搭計程車減少戶外步行',
+    day: 2, date: '2/22(日)', theme: '札幌經典巡禮 & 螃蟹吃到飽', location: '二條市場・美月櫻・東本願寺・北海道神宮・伏見稻荷',
+    clothing: '和服內搭發熱衣褲（玉米式穿法）、暖暖包貼背部與腳底、防滑草履或雪靴（視店家提供）',
+    snowTip: '二月下旬約 -5°C，室外極冷。和服內可加穿發熱衣，移動建議搭計程車（10 人分乘 3 台，人均費用與地鐵持平，且能直達景點避免雪地步行）',
     spots: [
-      { time: '09:30', name: '二條市場 早餐', desc: '推薦：大磯（烤魚/海鮮丼）或 Donburi Chaya。預算 2,500~3,500 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '二条市場 札幌', photoTip: '海鮮丼俯拍 + 市場人文街拍' },
-      { time: '10:00', name: '美月櫻 和服換裝', desc: '開門即前往換裝，租借含挑選約 1 小時。\n\n👘 換裝完成後，直接在附近「狸小路」拍復古商店街氛圍。\n\n⏰ 還衣時間：通常 18:00 關門\n→ 請確認還衣計畫，或詢問店家是否有隔日歸還方案', icon: '👘', category: '活動', tags: ['必拍'], mapQuery: '美月櫻 札幌' },
-      { time: '11:30', name: '東本願寺 札幌別院', desc: '從美月櫻步行約 10-12 分鐘（和服小步走）。\n\n📸 街拍重點\n・莊嚴木造建築與屋簷\n・比起神宮人潮更少\n・非常適合拍出安靜、禪意的和服大片', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '真宗大谷派 東本願寺 札幌別院', photoTip: '木造屋簷下的和服側拍，光影效果極佳' },
-      { time: '12:30', name: 'GARAKU 湯咖哩', desc: '人氣極高！建議派人 11:30 先去抽號碼牌。備案：Treasure 或 Suage+。預算 1,500 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'GARAKU 湯咖哩 札幌', photoTip: '湯咖哩的繽紛蔬菜很上鏡' },
-      { time: '14:00', name: '大通公園 & 札幌電視塔', desc: '搭計程車或地鐵至大通站。\n\n📸 街拍重點\n・以電視塔為背景是大通公園經典構圖\n・噴水池或長椅邊可拍出「札幌地標感」', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'さっぽろテレビ塔', photoTip: '電視塔與和服合照，低角度仰拍更壯觀' },
-      { time: '15:30', name: '北海道神宮', desc: '地鐵東西線至「圓山公園站」或搭計程車。\n\n📸 街拍重點\n・和服與神宮是絕配\n・巨大鳥居、手水舍、通往本殿的林道\n・氣場非常強\n\n⏰ 神宮 17:00 關門，最晚 15:30 抵達可獲最佳午後光線\n\n☕ 休息點：神宮內「六花亭」茶屋\n→ 邊休息邊拍吃甜點的特寫', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '北海道神宮', photoTip: '雪中鳥居 × 和服，用廣角拍出氣勢' },
-      { time: '17:30', name: '白色戀人公園', desc: '地鐵東西線坐到終點「宮之澤站」。\n\n📸 街拍重點\n・完全不同的歐式童話風\n・紅磚牆、噴水池與歐式建築\n・適合拍出華麗「大正浪漫」風情\n・營業到 19:00，傍晚點燈後非常浪漫\n\n💡 這裡是最西邊，排在最後一站最順路\n→ 結束後可直接搭計程車回飯店\n→ 或坐地鐵回大通站還和服', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '白い恋人パーク', photoTip: '傍晚點燈後的歐式建築 × 和服 = 大正浪漫' },
-      { time: '19:30', name: '成吉思汗烤肉', desc: '推薦：達摩 Daruma（需排隊）或松尾成吉思汗（建議訂位）。預算 4,000 日圓。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'だるま 本店 札幌', photoTip: '鐵鍋烤肉冒煙的瞬間最有氛圍' },
+      { time: '09:30', name: '分組行動', desc: '⚠ 分組行動：\n\n👘 和服組（Luna、Amy、Fish）→ 抵達美月櫻，進行和服租借與著裝\n🍜 早餐組（其他人）→ 前往二條市場\n\n📍 二條市場推薦：大磯（烤魚/海鮮丼）或 Donburi Chaya\n💰 預算：2,500~3,500 日圓', icon: '👘', category: '活動', tags: ['必拍'], mapQuery: '美月櫻 札幌', photoTip: '海鮮丼俯拍 + 市場人文街拍' },
+      { time: '11:30', name: '美月櫻集合', desc: '全員於美月櫻集合，搭乘 3 台計程車前往東本願寺。', icon: '🚕', category: '交通', tags: [], mapQuery: '美月櫻 札幌' },
+      { time: '11:45', name: '東本願寺 札幌別院', desc: '大雪、黑木建築與和服的絕佳拍照點。\n\n📸 街拍重點\n・莊嚴木造建築與屋簷\n・比起神宮人潮更少\n・非常適合拍出安靜、禪意的和服大片', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '真宗大谷派 東本願寺 札幌別院', photoTip: '木造屋簷下的和服側拍，光影效果極佳' },
+      { time: '12:30', name: '午餐：Maruyama Picante', desc: '由東本願寺搭計程車約 12 分鐘抵達。', icon: '🍜', category: '食物', tags: [], mapQuery: 'picante 札幌 円山' },
+      { time: '14:00', name: '北海道神宮', desc: '步行穿過圓山公園參拜。週日人多，請預留拍照排隊時間。\n\n📸 街拍重點\n・和服與神宮是絕配\n・巨大鳥居、手水舍、通往本殿的林道\n・氣場非常強\n\n🍡 必吃：六花亭神宮茶屋的現烤「判官餅」（判官さま）', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '北海道神宮', photoTip: '雪中鳥居 × 和服，用廣角拍出氣勢' },
+      { time: '15:30', name: '圓山鬆餅（下午茶）', desc: '若需候位，可先派代表登記，其他人繼續在神宮拍照。', icon: '🍜', category: '食物', tags: [], mapQuery: 'Maruyama Pancake 札幌', photoTip: '鬆餅堆疊側拍最誘人' },
+      { time: '16:30', name: '伏見稻荷神社', desc: '拍攝著名的雪中「千本鳥居」與薄暮景色，紅色鳥居在白雪中超級醒目（IG 爆紅打卡點）。\n\n🚕 交通：搭計程車前往。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '伏見稲荷神社 札幌', photoTip: '紅色鳥居 × 白雪對比最吸睛，從低角度拍' },
+      { time: '17:30', name: '還衣服 / 狸小路', desc: '回到美月櫻還衣服，隨後在狸小路自由活動採買。', icon: '🛍', category: '購物', tags: [], mapQuery: '狸小路商店街 札幌' },
+      { time: '19:00', name: '⚠ SAKURA BUFFET', desc: '晚餐大團圓，螃蟹吃到飽！三大蟹吃到飽及現場料理秀，主打「現蒸」鮮甜蟹肉。\n\n🎫 訂位代號：SD9893527\n🔗 訂位連結：hotpepper.jp（Tony 帳號）\n🎟 折價券：hokkaido.letsgojp.com/coupon/764036/\n💰 預算：約 10,000 日圓\n\n⚠ 此為已預約餐廳，請務必準時抵達。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'THE SAKURA BUFFET 札幌', photoTip: '三大蟹豪華擺盤 + 現蒸料理秀' },
     ]
   },
   {
@@ -118,28 +127,32 @@ const TRIP_DAYS = [
     clothing: '保暖長版外套、圍巾、毛帽、防水手套',
     snowTip: '小樽海風較強，體感溫度更低',
     spots: [
-      { time: '08:30', name: 'JR 至小樽', desc: '計程車至札幌站 → JR 快速 Airport 至「小樽站」（750 日圓）。', icon: '🚃', category: '交通', tags: [], mapQuery: '小樽駅' },
-      { time: '10:00', name: '三角市場 早午餐', desc: '推薦：瀧波食堂。亮點：可點一隻帝王蟹現場分食，配海鮮丼。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '三角市場 小樽', photoTip: '帝王蟹特寫 + 市場全景' },
-      { time: '11:30', name: '小樽水族館', desc: '冬季限定「企鵝雪中散步」！從小樽站前搭巴士約 25 分。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'おたる水族館', photoTip: '企鵝散步用連拍模式捕捉萌瞬間' },
-      { time: '14:30', name: '堺町通商店街', desc: '參觀音樂盒堂、LeTAO 本店吃下午茶、北一硝子館。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: '堺町通り 小樽', photoTip: '音樂盒堂蒸氣時鐘必拍' },
-      { time: '15:30', name: 'みっふぃーおやつ堂 小樽店', desc: 'Miffy 點心堂！位在堺町通上，販售 Miffy 造型甜點與周邊商品。\n\n📍 地址：小樽市堺町 4-11\n🍩 必買：Miffy 造型雞蛋糕、限定周邊', icon: '🛍', category: '購物', tags: [], mapQuery: 'みっふぃーおやつ堂 小樽店', photoTip: 'Miffy 造型甜點超萌必拍' },
-      { time: '16:00', name: '住吉神社', desc: '小樽最大的神社，莊嚴寧靜。從堺町通步行約 10 分鐘。\n\n📸 雪中參道氣氛幽靜\n・石燈籠與鳥居在白雪中格外壯觀\n・人潮比北海道神宮少很多，適合靜心參拜', icon: '⛩', category: '景點', tags: [], mapQuery: '住吉神社 小樽', photoTip: '雪中參道石燈籠，拍出幽靜氛圍' },
-      { time: '17:00', name: '小樽運河', desc: '拍攝 Blue Hour 藍調時刻的運河夜景，倉庫群與煤氣燈最美。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '小樽運河', photoTip: '黃昏 16:30-17:30 是 Blue Hour 黃金時段' },
-      { time: '19:00', name: 'JR 返回札幌', desc: 'JR 返回札幌車站。', icon: '🚃', category: '交通', tags: [] },
-      { time: '20:30', name: 'AOAO SAPPORO', desc: '狸小路 moyuk 大樓的都市水族館，營業到深夜，氣氛如酒吧。', icon: '⛩', category: '景點', tags: [], mapQuery: 'AOAO SAPPORO', photoTip: '夢幻燈光水母缸超好拍' },
-      { time: '22:00', name: '狸小路居酒屋', desc: '推薦：炎 (En) 或串鳥（平價串燒連鎖）。', icon: '🍜', category: '食物', tags: [], mapQuery: '炎 居酒屋 狸小路' },
+      { time: '08:30', name: '前往小樽交通指南', desc: '總行程約 1～1.25 小時，全程建議使用 IC 卡（Suica / Kitaca）嗶卡感應。\n\n🚕 方案一：10 人團體推薦（計程車 + JR）\n1. 民宿 → JR 札幌站：分乘 3 台計程車直達札幌站南口\n　・每台約 1,500~2,000 日圓（人均僅約 500 日圓）\n　・節省 30 分鐘轉乘時間，不需雪地步行\n2. JR 札幌站 → 小樽：轉乘 JR 快速 Airport 號（票價 750 日圓，車程 32-35 分鐘）\n\n🚃 方案二：大眾運輸全程（市電 + 地鐵 + JR）\nStep 1：民宿步行 2 分鐘至「行啟通」站 → 搭市電往「西 4 丁目」（約 12-15 分鐘）\nStep 2：步行 2-3 分鐘至地鐵「大通站」→ 搭南北線一站至「札幌站」\n　・冬日替代：可走地下步行空間 Chi-Ka-Ho（約 10-15 分鐘，不受風雪影響）\nStep 3：JR 札幌站搭「快速 Airport 號」至小樽（1、2 號月台發車）\n\n💡 行前小提醒\n・天氣預警：冬季大雪可能導致 JR 停駛，請備妥高速巴士替代方案\n・集合點：建議 10 人團體設定同一集合點（如 JR 札幌站西檢票口），避免走散', icon: '🚃', category: '交通', tags: [], mapQuery: '小樽駅' },
+      { time: '09:30', name: '搭乘 JR 快速列車抵達小樽', desc: '🏔 坐在列車前進方向的右側！\n過了「錢函站」後，鐵軌緊鄰海岸線，可觀賞壯麗的石狩灣海景。', icon: '🚃', category: '交通', tags: [], mapQuery: '小樽駅' },
+      { time: '10:15', name: '三角市場 早午餐', desc: '抵達後先吃海鮮丼，此時人潮較中午少！\n\n推薦：瀧波食堂\n亮點：可點一隻帝王蟹現場分食，配海鮮丼。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '三角市場 小樽', photoTip: '帝王蟹特寫 + 市場全景' },
+      { time: '11:40', name: '搭乘巴士前往水族館', desc: '🚌 小樽站 → 水族館交通攻略\n\nStep 1：步行至巴士總站（約 2-3 分鐘）\n・從 JR 小樽站檢票口出來，直走穿過大廳由正門出口出站\n・踏出大門後立即向右轉，即可看到「小樽站前巴士總站」\n・直奔 3 號乘車處（地面與柱子皆有明顯數字「3」標示）\n\nStep 2：搭乘巴士（約 20-25 分鐘）\n・搭乘 10 號或 11 號（祝津線），車頭標示往「祝津」或「おたる水族館」\n・車資：成人單程 240 日圓\n\n🕐 2/23（假日）去程時刻表｜小樽駅前 → 水族館\n　 8:40 → 9:40 → 10:20 → 10:30 → 10:40\n　11:20 → ⭐11:40 → 12:20 → 12:40\n　13:20 → 13:40 → 14:20 → 14:40 → 15:40\n　（⭐為建議搭乘班次）\n　※ 此為冬季直行便，僅營運至 2/23（最後一天！）\n\nStep 3：付款方式\n・IC 卡（推薦）：Suica、Kitaca、PASMO 皆可感應\n・現金：後門上車領整理券，前門下車投幣', icon: '🚌', category: '交通', tags: [], mapQuery: 'おたる水族館', images: [{ src: 'images/otaru-bus-terminal.png', alt: '小樽站前巴士總站', caption: '小樽站前巴士總站（中央バス）— 出站右轉即可看到藍色棚頂的巴士總站' }] },
+      { time: '12:10', name: '小樽水族館', desc: '冬季限定「企鵝雪中散步」！2/23 是企鵝散步的最後一天，務必把握！\n\n🐧 企鵝雪中散步場次\n・12:40 / 13:30 / 14:40（每場約 10 分鐘）\n・活動期間：2025/12/13 - 2026/2/23\n・地點：企鵝館前雪地，巴布亞企鵝領軍\n・注意：請勿觸摸、餵食或追趕企鵝，在圍欄外拍攝\n\n🕐 冬季營業時間：10:00 - 16:00（最後入館 15:30）\n\n💡 10 人團體提醒\n・行李寄放：建議利用小樽站內或巴士總站投幣置物櫃\n・冬季備案：積雪深厚，巴士可能延遲，請穿防滑鞋並預留緩衝時間', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'おたる水族館', photoTip: '企鵝散步用連拍模式捕捉萌瞬間' },
+      { time: '14:40', name: '搭巴士回到「入船十字路口」', desc: '搭乘中央巴士 10 號（祝津線）從水族館直達入船十字路口，不用轉車。\n\n🚌 搭乘資訊\n・上車站：「おたる水族館」巴士站（水族館門口）\n・路線：10 號（祝津線），往小樽車站/市區方向\n・下車站：「入船十字街」（Irifune Crossroad）\n・車資：240 日圓（IC 卡或現金）\n・車程：約 30-35 分鐘\n\n📋 搭乘步驟\n1. 水族館門口候車，找「10 號」站牌\n2. 從後門上車，感應 IC 卡或抽整理券\n3. 巴士會先經過小樽車站，請不要下車，繼續坐往南小樽方向\n4. 廣播顯示「入船十字街」時按下車鈴\n5. 從前門下車，感應 IC 卡或投幣 240 日圓\n\n🚶 下車後步行指引\n・往住吉神社：朝上坡方向走（背對大海），步行約 3 分鐘即到鳥居\n・往堺町通/音樂盒堂：朝下坡方向走（面對大海），步行約 5-7 分鐘到童話十字路口\n\n🕐 2/23（假日）回程時刻表｜水族館發車\n\n　⚠ 直行便（不停入船，直達小樽駅）\n　12:50 → 13:50 → 14:20 → 14:50 → 15:20 → 15:50 → 16:10\n\n　✅ 10 號（經高島，停入船十字街）← 我們搭這個！\n　10:06 → 11:06 → 12:06 → 13:06 → 14:06 → ⭐15:06 → 16:16\n\n　🔵 11 號（經赤岩，停入船十字街，路程較遠）\n　10:32 → 11:32 → 12:32 → 13:32 → 14:32 → 15:32 → 16:32\n\n　（⭐為建議搭乘班次：看完 14:40 企鵝散步後搭 15:06）\n　※ 冬季直行便僅營運至 2/23（最後一天！）\n\n💡 小提醒\n・必須搭 10 號或 11 號才會停「入船十字街」，直行便不停！\n・優先選 10 號（經高島），11 號繞經赤岩山區路程較遠\n・建議看完 14:40 企鵝散步後，搭 15:06 的 10 號巴士', icon: '🚌', category: '交通', tags: [], mapQuery: 'https://www.google.com/maps/dir/Otaru+Aquarium,+%EF%BC%93%E4%B8%81%E7%9B%AE-303+%E7%A5%9D%E6%B4%A5,+%E5%B0%8F%E6%A8%BD%E5%B8%82+%E5%8C%97%E6%B5%B7%E9%81%93,+Japan/%E6%97%A5%E6%9C%AC,+%E5%8C%97%E6%B5%B7%E9%81%93%E5%B0%8F%E6%A8%BD%E5%B8%82%E7%A8%B2%E7%A9%82%EF%BC%92%E4%B8%81%E7%9B%AE%EF%BC%91%EF%BC%95%E2%88%92%EF%BC%91,+%E5%85%A5%E8%88%9F+(Irifune)/data=!4m14!4m13!1m5!1m1!19sChIJhSqlPAUeC18RURQ2LaIFswE!2m2!1d141.0119143!2d43.2369305!1m5!1m1!19sChIJ____j63hCl8RxjjITWxkBmU!2m2!1d140.9974851!2d43.1957856!3e3' },
+      { time: '15:15', name: '住吉神社', desc: '小樽最大的神社，莊嚴寧靜。趁天亮參拜，此時斜射光拍鳥居與海景很漂亮。\n\n📸 雪中參道氣氛幽靜\n・石燈籠與鳥居在白雪中格外壯觀\n・人潮比北海道神宮少很多，適合靜心參拜', icon: '⛩', category: '景點', tags: [], mapQuery: '住吉神社 小樽', photoTip: '雪中參道石燈籠，拍出幽靜氛圍' },
+      { time: '16:00', name: '堺町通商店街', desc: '從神社步行回商店街。參觀音樂盒堂、LeTAO 本店吃下午茶、北一硝子館。\n\n⚠ 注意：音樂盒堂與大部分店家 18:00 關門，請留意時間！', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: '堺町通り 小樽', photoTip: '音樂盒堂蒸氣時鐘必拍' },
+      { time: '17:40', name: '小樽運河夜景（淺草橋）', desc: '煤氣燈亮起，冬季此時已全黑，夜景氛圍絕佳。\n\n📸 拍攝重點\n・倉庫群與煤氣燈倒映運河水面\n・淺草橋是最經典的拍攝角度', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '小樽運河 浅草橋', photoTip: '煤氣燈 × 倉庫群 × 雪景，冬季夜景最浪漫' },
+      { time: '18:30', name: '運河區晚餐', desc: '推薦：運河倉庫群餐廳（如小樽啤酒、海鮮餐廳）。\n在運河旁的歷史倉庫中享用晚餐，氣氛絕佳。', icon: '🍜', category: '食物', tags: [], mapQuery: '小樽倉庫No.1 小樽ビール', photoTip: '倉庫改建餐廳的復古氛圍' },
+      { time: '20:10', name: 'JR 小樽站賦歸', desc: '從運河步行約 10-15 分鐘回到小樽站，搭 JR 返回札幌。\n\n🕐 小樽 → 札幌 JR 時刻表（傍晚～末班）\n\n　18:30 → 19:03　快速 Airport｜晚餐前搭乘首選\n　19:00 → 19:33　快速 Airport\n　⭐19:30 → 20:03　快速 Airport｜建議最慢搭這班，回札幌還有店開\n　20:00 → 20:33　快速 Airport\n　20:30 → 21:03　快速 Airport\n　21:00 → 21:33　快速 Airport\n　21:30 → 22:04　普通車（站站停，時間較長）\n　22:00 → 22:33　快速 Airport｜最後一班快速列車\n　22:35 → 23:21　普通車\n　23:10 → 23:59　普通車｜最終末班車\n\n💡 車程約 33 分鐘（快速）、票價 750 日圓\n⚠ 冬季大雪可能延遲，請留意 JR 北海道運行情報', icon: '🚃', category: '交通', tags: [], mapQuery: '小樽駅' },
     ]
   },
   {
-    day: 4, date: '2/24(二)', theme: '千本鳥居帝王蟹', location: '圓山・伏見稻荷・藻岩山',
+    day: 4, date: '2/24(二)', theme: '大通公園白色戀人藻岩山', location: '大通・宮之澤・藻岩山',
     clothing: '發熱內衣、中層刷毛、長版羽絨、暖暖包（藻岩山頂極冷）',
     snowTip: '藻岩山頂風大氣溫驟降，暖暖包貼滿',
     spots: [
-      { time: '10:00', name: '圓山公園散策', desc: '享受早晨的雪中森林浴，幽靜療癒。', icon: '⛩', category: '景點', tags: [], mapQuery: '円山公園 札幌' },
-      { time: '11:30', name: '圓山鬆餅午餐', desc: '推薦 Maruyama Pancake。備案：Rojiura Curry Samurai 圓山店。', icon: '🍜', category: '食物', tags: [], mapQuery: 'Maruyama Pancake 札幌', photoTip: '鬆餅堆疊側拍最誘人' },
-      { time: '14:00', name: '伏見稻荷神社', desc: '連綿紅色鳥居在雪地中超醒目（IG 爆紅點）。從圓山搭計程車約 10 分。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '伏見稲荷神社 札幌', photoTip: '紅色鳥居 × 白雪對比最吸睛，從低角度拍' },
-      { time: '16:00', name: '藻岩山夜景', desc: '日本新三大夜景之一！門票約 2,100 日圓。搭計程車或市電至纜車口。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'もいわ山ロープウェイ', photoTip: '日落前 30 分上山可拍到漸層天空' },
-      { time: '19:00', name: '居酒屋 魚金', desc: '生魚片豪邁好吃！或選 Hokkaido Robinson。建議訂位。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '魚金 札幌 薄野', photoTip: '刺身船盛超壯觀必拍' },
+      { time: '09:00', name: '早餐：二條市場（Optional）', desc: '想吃海鮮丼的人可以早起來這裡！不想去的人可以睡到自然醒，直接 10:00 會合。\n\n📍 地點：大通附近，步行可達電視塔\n🍣 推薦：大磯（烤魚／海鮮丼）、Donburi Chaya\n💰 預算：2,500～3,500 日圓', icon: '🍜', category: '食物', tags: [], mapQuery: '二条市場 札幌', photoTip: '海鮮丼特寫，鮭魚卵粒粒分明' },
+      { time: '10:00', name: '電視塔 & 大通公園', desc: '在大通公園雪地拍照，以電視塔為背景。冬季雖無雪祭，但積雪公園別有風情。\n\n📸 拍攝重點\n・電視塔 × 雪白大通公園全景\n・公園夜間點燈依然浪漫', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'さっぽろテレビ塔', photoTip: '以電視塔為背景，在雪地大通公園拍照' },
+      { time: '12:00', name: 'GARAKU 湯咖哩', desc: '札幌排隊名店！人氣極高，建議派人 11:30 先去抽號碼牌。\n\n📍 地點：大通附近\n💰 預算：約 1,500 日圓\n\n🔄 備案：若排太久，改吃 Treasure（姊妹店）或 Suage+。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'GARAKU 湯咖哩 札幌', photoTip: '湯咖哩色彩繽紛，俯拍最好看' },
+      { time: '14:00', name: '白色戀人公園', desc: '歐式童話建築，參觀餅乾產線，戶外雪景非常美。\n\n🚇 交通：地鐵東西線「大通」→「宮之澤」（290 日圓），出站步行約 7 分鐘\n🎫 工廠參觀需門票（約 800 日圓）\n⏱ 建議停留 2-3 小時', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '白い恋人パーク', photoTip: '歐風中庭雪景超夢幻' },
+      { time: '15:30', name: '白色戀人公園→藻岩山 交通指南', desc: '全程約 40-45 分鐘，共 4 段接駁。\n\n🚶 Step 1：步行至宮之澤站（約 7 分鐘）\n從白色戀人公園大門出來，面對大馬路 XEBEC Miyanosawa，往 Fireburg Miyanosawa 方向沿人行道直走走到 Fireburg Miyanosawa 過馬路\n[IMG:0]\n直走到 XEBEC Miyanosawa 旁邊的巷子，看到黑色房子往黑色房子的巷子走\n[IMG:1]\n右手邊會看到西友超市（SEIYU），旁邊即為宮之澤站 5 號出口\n[IMG:2]\n\n🚇 Step 2：地鐵東西線 宮之澤→西 11 丁目（約 13-15 分鐘）\n從 5 號出口進入地下 1 樓驗票閘口，下至地下 2 樓月台。宮之澤站為終點站，1 號與 2 號月台列車皆經過西 11 丁目站，看電子看板哪班先發車即可搭乘。\n・站數：宮之澤 (T01) → 西 11 丁目 (T08)，共 7 站\n・車資：290 日圓\n\n🚋 Step 3：轉乘市電至索道入口站（約 20 分鐘）\n西 11 丁目站下車後，從 2 號或 3 號出口出站，步行 1-2 分鐘即到路面電車「西 11 丁目站」。搭乘「內環線」電車，途經中央區役所前、西 15 丁目，於「ロープウェイ入口」站下車。\n\n🚶 Step 4：步行至藻岩山纜車山麓站（約 7 分鐘）\n下車後沿南 19 條通指示牌往山上走，附近有免費接駁小巴站牌可搭乘。抵達藻岩山纜車山麓站（一樓設有售票處與紀念品店）。', icon: '🚇', category: '交通', tags: [], mapQuery: '宮の沢駅', images: [{ src: 'images/fireburg-miyanosawa.png', alt: 'Fireburg Miyanosawa 路口', caption: '走到 Fireburg Miyanosawa 後過馬路' }, { src: 'images/black-house-alley.png', alt: '黑色房子巷口', caption: '看到黑色房子，往黑色房子的巷子走' }, { src: 'images/miyanosawa-exit5.png', alt: '宮之澤站 5 號出口', caption: '宮之澤站 5 號出口' }] },
+      { time: '16:00', name: '藻岩山夜景', desc: '日本新三大夜景之一！上去前先看直播評估是否要上山。\n\n🚕 交通：搭計程車或市電至纜車口\n💰 門票：約 2,100 日圓\n⚠ 山頂極冷，暖暖包貼滿\n🌅 亮點：可同時看夕陽與夜景', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'もいわ山ロープウェイ', photoTip: '日落前 30 分上山可拍到漸層天空' },
+      { time: '16:30', name: 'AOAO SAPPORO 水岸夜遊票（Optional）', desc: '藻岩山的備案，或吃完晚飯去也很適合！營業到深夜的都市水族館，氣氛如酒吧。\n\n📍 地點：狸小路 moyuk SAPPORO 大樓\n💰 夜遊票：2,500 日圓\n🎫 售票：https://www.asoview.com/channel/ticket/EIWcPfi2wp/ticket0000032113/\n\n🎁 夜遊票含「北極熊面包店&」兌換一份（三選一）：\n\n　1️⃣ 收尾巴菲雪糕套餐\n　　・應季收尾巴菲雪糕\n　　・企鵝收尾巴菲雪糕（伊沃特比企鵝巴菲雪糕）\n\n　2️⃣ SAPPORO 套餐\n　　・札幌古典＋混合堅果\n\n　3️⃣ 發光套餐\n　　・發光 AOAO 蘇打＋羊角面包（原味／天然酵母）', icon: '🐟', category: '景點', tags: [], mapQuery: 'AOAO SAPPORO' },
+      { time: '19:00', name: '居酒屋 魚金', desc: '生魚片豪邁好吃！或選 Hokkaido Robinson。建議訂位。\n\n⚠️ 建議訂位，10 人團體尤其重要。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '魚金 札幌 薄野', photoTip: '刺身船盛超壯觀必拍' },
     ]
   },
   {
@@ -174,7 +187,7 @@ const TRIP_DAYS = [
     clothing: '輕便保暖即可，室內購物為主',
     snowTip: '購物日以室內為主，但轉場時注意路面積雪',
     spots: [
-      { time: '10:00', name: '中島公園', desc: '民宿附近散步，參觀豐平館。冬季銀白世界非常幽靜。', icon: '⛩', category: '景點', tags: [], mapQuery: '中島公園 札幌', photoTip: '雪白公園銀杏步道如夢似幻' },
+      { time: '10:00', name: '中島公園', desc: '民宿附近散步，參觀豐平館。冬季銀白世界非常幽靜。\n\n⛷ 中島公園可體驗雙板滑雪，1,000 日圓／人，適合還沒滑過癮的人！', icon: '⛩', category: '景點', tags: [], mapQuery: '中島公園 札幌', photoTip: '雪白公園銀杏步道如夢似幻' },
       { time: '11:30', name: '根室花丸 迴轉壽司', desc: '札幌車站 Stellar Place。非常熱門！建議 11:00 前抽號碼牌。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '根室花まる JRタワーステラプレイス店', photoTip: '迴轉壽司的精美壽司特寫' },
       { time: '13:30', name: 'BicCamera 電器', desc: '結帳出示 10%免稅+7%折扣券。目標：吹風機、保溫瓶、電器。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: 'ビックカメラ 札幌駅前' },
       { time: '15:30', name: '唐吉訶德', desc: '狸小路店。滿 3 萬日圓出示免稅+折扣券。目標：藥妝、零食、伴手禮。', icon: '🛍', category: '購物', tags: ['必買'], mapQuery: 'ドン・キホーテ 狸小路' },
@@ -231,6 +244,22 @@ const WEATHER_DATA = [
   { day: 8, date: '2/28', location: '新千歲', high: 0, low: -5, snow: '45%', depth: '78cm', feels: -7, desc: '多雲，交通正常' },
 ];
 
+const TRIP_DATES = [
+  '2026-02-21', '2026-02-22', '2026-02-23', '2026-02-24',
+  '2026-02-25', '2026-02-26', '2026-02-27', '2026-02-28',
+];
+
+const DAY_COORDS = [
+  { lat: 43.06, lon: 141.35 }, // Day 1: 札幌
+  { lat: 43.06, lon: 141.35 }, // Day 2: 札幌
+  { lat: 43.19, lon: 141.00 }, // Day 3: 小樽
+  { lat: 43.06, lon: 141.35 }, // Day 4: 札幌
+  { lat: 43.08, lon: 141.19 }, // Day 5: 手稻
+  { lat: 43.08, lon: 141.19 }, // Day 6: 手稻
+  { lat: 43.06, lon: 141.35 }, // Day 7: 札幌
+  { lat: 42.78, lon: 141.68 }, // Day 8: 新千歲
+];
+
 const TRAVEL_RULES = [
   { title: '🗑 垃圾分類', items: ['可燃垃圾：食物殘渣、紙巾、塑膠袋', '不可燃垃圾：金屬、玻璃、陶瓷', '資源回收：寶特瓶（蓋子分開）、鋁罐、紙類', '民宿對垃圾分類要求極嚴，請務必遵守'] },
   { title: '🚃 電車禮儀', items: ['背包改為前背或放腳邊', '手機設靜音，避免通話', '讓座給老人、孕婦、身障者', '排隊依序上車，先下後上'] },
@@ -245,12 +274,228 @@ const EMERGENCY_INFO = [
   { label: '旅遊急難救助（24H）', number: '+886-800-085-095', icon: '📞' },
 ];
 
+const WEATHER_ALERT_LINKS = {
+  1: { // 機場 → 札幌
+    transport: [
+      { label: 'JR 北海道 列車運行情報', url: 'https://www3.jrhokkaido.co.jp/webunkou/', icon: '🚃' },
+    ],
+    weather: [
+      { label: 'tenki.jp 新千歲空港', url: 'https://tenki.jp/leisure/airport/1/2/24011/', icon: '🌨' },
+      { label: 'tenki.jp 札幌', url: 'https://tenki.jp/forecast/1/2/1400/1100/', icon: '🌨' },
+    ],
+    altTransport: [
+      { label: '機場巴士（中央巴士）', url: 'https://www.chuo-bus.co.jp/airport/', icon: '🚌', note: '抗風雪能力優於 JR' },
+      { label: '機場巴士（北都交通）', url: 'https://www.hokto.co.jp/airport_bus/', icon: '🚌', note: '札幌多點發車' },
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  2: { // 札幌市內（計程車為主）
+    transport: [
+      { label: '札幌地鐵＋市電 運行情報', url: 'https://operationstatus.city.sapporo.jp/unkojoho/', icon: '🚇' },
+      { label: '市電即時追蹤', url: 'http://navi.stsp.or.jp/', icon: '🚋' },
+    ],
+    weather: [
+      { label: 'tenki.jp 札幌', url: 'https://tenki.jp/forecast/1/2/1400/1100/', icon: '🌨' },
+      { label: 'Windy 風場圖', url: 'https://www.windy.com/43.06/141.35', icon: '📡' },
+    ],
+    altTransport: [
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  3: { // 札幌 ⇄ 小樽
+    transport: [
+      { label: 'JR 北海道 列車運行情報', url: 'https://www3.jrhokkaido.co.jp/webunkou/', icon: '🚃' },
+      { label: '高速おたる号（中央巴士）', url: 'https://www.chuo-bus.co.jp/highway/?t=21&ope=list&o=1', icon: '🚌', note: 'JR 停駛時的備案' },
+      { label: '高速おたる号（JR 巴士）', url: 'https://www.jrhokkaidobus.com/timetable/highway01/', icon: '🚌' },
+    ],
+    weather: [
+      { label: 'tenki.jp 小樽', url: 'https://tenki.jp/forecast/1/2/1600/1203/', icon: '🌨' },
+      { label: 'Windy 小樽沿岸', url: 'https://www.windy.com/43.19/141.00', icon: '📡' },
+    ],
+    altTransport: [
+      { label: '小樽水族館巴士時刻', url: 'https://otaru-aq.jp/guide/bus', icon: '🐬', note: '祝津線・水族館線' },
+      { label: '中央巴士 運休查詢', url: 'https://www.chuo-bus.co.jp/support/stop/', icon: '🚌', note: '查巴士是否停駛' },
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  4: { // 大通 → 白色戀人 → 藻岩山
+    transport: [
+      { label: '札幌地鐵＋市電 運行情報', url: 'https://operationstatus.city.sapporo.jp/unkojoho/', icon: '🚇' },
+      { label: '市電即時追蹤', url: 'http://navi.stsp.or.jp/', icon: '🚋' },
+    ],
+    weather: [
+      { label: 'tenki.jp 札幌', url: 'https://tenki.jp/forecast/1/2/1400/1100/', icon: '🌨' },
+      { label: '藻岩山纜車官網', url: 'https://mt-moiwa.jp/', icon: '🚡', note: '強風時可能停駛' },
+    ],
+    altTransport: [
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  5: { // 手稻滑雪場
+    transport: [
+      { label: 'JR 北海道 列車運行情報', url: 'https://www3.jrhokkaido.co.jp/webunkou/', icon: '🚃' },
+      { label: 'JR 巴士 手稻站乘車資訊', url: 'https://www.jrhokkaidobus.com/timetable/terminal/teine/', icon: '🚌' },
+    ],
+    weather: [
+      { label: '手稻滑雪場 天氣', url: 'https://tenki.jp/season/ski/1/2/11706/', icon: '⛷' },
+      { label: 'Windy 手稻山', url: 'https://www.windy.com/43.08/141.19', icon: '📡' },
+    ],
+    altTransport: [
+      { label: '手稻滑雪場交通方式', url: 'https://sapporo-teine.com/snow/access/', icon: '⛷', note: '官方交通指南' },
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '計程車直達滑雪場' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  6: { // 手稻滑雪場（同 Day 5）
+    transport: [
+      { label: 'JR 北海道 列車運行情報', url: 'https://www3.jrhokkaido.co.jp/webunkou/', icon: '🚃' },
+      { label: 'JR 巴士 手稻站乘車資訊', url: 'https://www.jrhokkaidobus.com/timetable/terminal/teine/', icon: '🚌' },
+    ],
+    weather: [
+      { label: '手稻滑雪場 天氣', url: 'https://tenki.jp/season/ski/1/2/11706/', icon: '⛷' },
+      { label: 'Windy 手稻山', url: 'https://www.windy.com/43.08/141.19', icon: '📡' },
+    ],
+    altTransport: [
+      { label: '手稻滑雪場交通方式', url: 'https://sapporo-teine.com/snow/access/', icon: '⛷', note: '官方交通指南' },
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '計程車直達滑雪場' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  7: { // 札幌市內購物（地鐵為主）
+    transport: [
+      { label: '札幌地鐵＋市電 運行情報', url: 'https://operationstatus.city.sapporo.jp/unkojoho/', icon: '🚇' },
+    ],
+    weather: [
+      { label: 'tenki.jp 札幌', url: 'https://tenki.jp/forecast/1/2/1400/1100/', icon: '🌨' },
+    ],
+    altTransport: [
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+  8: { // 札幌 → 新千歲機場
+    transport: [
+      { label: 'JR 北海道 列車運行情報', url: 'https://www3.jrhokkaido.co.jp/webunkou/', icon: '🚃' },
+      { label: '新千歲空港航班資訊', url: 'https://www.hokkaido-airports.com/en/new-chitose/', icon: '✈️' },
+    ],
+    weather: [
+      { label: 'tenki.jp 新千歲空港', url: 'https://tenki.jp/leisure/airport/1/2/24011/', icon: '🌨' },
+      { label: 'Windy 新千歲', url: 'https://www.windy.com/42.78/141.68', icon: '📡' },
+    ],
+    altTransport: [
+      { label: '機場巴士（中央巴士）', url: 'https://www.chuo-bus.co.jp/airport/', icon: '🚌', note: '抗風雪能力優於 JR' },
+      { label: '機場巴士（北都交通）', url: 'https://www.hokto.co.jp/airport_bus/', icon: '🚌', note: '札幌多點發車' },
+      { label: 'GO 叫車', url: 'https://go.mo-t.com/', icon: '🚕', note: '日本最大叫車 APP' },
+      { label: 'Uber 叫車', url: 'https://m.uber.com/', icon: '🚕', note: '國際版叫車，札幌可用' },
+    ],
+  },
+};
+
+const DAY_TRANSPORT_TIPS = {
+  1: {
+    summary: '機場 → 札幌市區',
+    risk: 'JR 快速 Airport 號可能停駛',
+    alternatives: [
+      '改搭機場巴士（中央巴士/北都交通），抗風雪能力優於 JR',
+      '多人可分乘計程車直達民宿（費用較高但最穩定）',
+    ],
+  },
+  2: {
+    summary: '札幌市內移動（計程車為主）',
+    risk: '市電可能延遲，地鐵通常不受影響',
+    alternatives: [
+      '地鐵是最穩定的選擇，不受地面風雪影響',
+      '用 GO/Uber 叫車，避免雪地步行',
+    ],
+  },
+  3: {
+    summary: 'JR 札幌 ⇄ 小樽（最受影響的一天）',
+    risk: 'JR 函館本線沿海岸行駛，強風極易停駛',
+    alternatives: [
+      '備案：高速巴士「札幌⇄小樽」（中央巴士），走高速公路較不受風影響',
+      '極端情況：取消小樽行程，改為札幌市區一日遊',
+      '巴士（水族館）也可能停駛，提前查詢中央巴士運休情報',
+    ],
+  },
+  4: {
+    summary: '大通 → 宮之澤（地鐵）→ 藻岩山（市電/計程車）',
+    risk: '地鐵通常不受影響，市電可能延遲',
+    alternatives: [
+      '白色戀人公園：地鐵東西線不受風雪影響，可正常前往',
+      '藻岩山：纜車可能因強風停駛，建議上山前先查直播',
+      '備案：改去 AOAO SAPPORO（室內，不受天氣影響）',
+    ],
+  },
+  5: {
+    summary: 'JR 巴士至手稻滑雪場',
+    risk: 'JR 巴士可能延遲或停駛',
+    alternatives: [
+      '分乘計程車直達滑雪場（約 40 分鐘，費用較高）',
+      '查詢滑雪場是否因暴風雪關閉纜車',
+    ],
+  },
+  6: {
+    summary: 'JR + 巴士至手稻滑雪場',
+    risk: 'JR 至手稻站可能停駛，接駁巴士也可能受影響',
+    alternatives: [
+      '分乘計程車直達滑雪場（最穩定）',
+      '備案：取消滑雪，改為市區泡湯（極樂湯）+ 購物',
+    ],
+  },
+  7: {
+    summary: '札幌市內購物（地鐵為主）',
+    risk: '影響較小，地鐵不受風雪影響',
+    alternatives: [
+      '全程利用地鐵移動（南北線、東西線）',
+      '蟹本家晚餐用 GO/Uber 叫車前往',
+    ],
+  },
+  8: {
+    summary: 'JR 札幌 → 新千歲機場（最關鍵！）',
+    risk: 'JR 快速 Airport 號停駛 = 趕不上飛機',
+    alternatives: [
+      '最重要備案：機場巴士（中央巴士/北都交通），從札幌市區多點發車',
+      '提早 1 小時出發，預留暴風雪緩衝時間',
+      '極端情況：前一晚住機場附近飯店',
+    ],
+  },
+};
+
 const TRIP_INFO = {
   flight: { outbound: '酷航 TR893・2/21 17:20 抵達新千歲 CTS', inbound: '酷航 TR893・2/28 17:30 起飛' },
-  hotel: { name: 'Gyokeidori Luxury House', address: '札幌市南14条西6丁目', note: '近市電「行啟通」站' },
+  hotel: { name: 'Gyokeidori Luxury House', address: '〒064-0914 北海道札幌市中央区南14条西6丁目4-26', note: '近市電「行啟通」站', mapQuery: 'Gyokeidori Luxury House 札幌' },
   car: '自駕租車憑證（請確認雲端文件）',
   apps: ['GO / Uber：叫車', 'Japan Travel by NAVITIME：查 JR 班次', 'Google Maps：導航'],
 };
+
+const TIMETABLE_LINKS = [
+  { label: 'JR 札幌→新千歲空港', url: 'https://jrhokkaidonorikae.com/ekihatsu/ekihatsu.php?node=%E6%9C%AD%E5%B9%8C&linename=%EF%BC%AA%EF%BC%B2%E5%8D%83%E6%AD%B3%E7%B7%9A&directionname=%E5%8D%83%E6%AD%B3%E3%83%BB%E6%96%B0%E5%8D%83%E6%AD%B3%E7%A9%BA%E6%B8%AF&next_node_id=4213&directionname2=', icon: '🚃', note: 'JR 千歳線・約 37 分鐘' },
+  { label: 'JR 新千歲空港→札幌', url: 'https://jrhokkaidonorikae.com/ekihatsu/ekihatsu.php?node=%E6%96%B0%E5%8D%83%E6%AD%B3%E7%A9%BA%E6%B8%AF&linename=%EF%BC%AA%EF%BC%B2%E5%8D%83%E6%AD%B3%E7%B7%9A&directionname=%E6%9C%AD%E5%B9%8C%E3%83%BB%E5%B0%8F%E6%A8%BD&next_node_id=4284&directionname2=', icon: '🚃', note: 'JR 千歳線・約 37 分鐘' },
+  { label: 'JR 札幌→手稻・小樽', url: 'https://jrhokkaidonorikae.com/ekihatsu/ekihatsu.php?node=%E6%9C%AD%E5%B9%8C&linename=%EF%BC%AA%EF%BC%B2%E5%87%BD%E9%A4%A8%E6%9C%AC%E7%B7%9A&directionname=%E6%89%8B%E7%A8%B2%E3%83%BB%E5%B0%8F%E6%A8%BD&next_node_id=4212&directionname2=%E6%B1%9F%E5%88%A5%E3%83%BB%E5%B2%A9%E8%A6%8B%E6%B2%A2%7C4213', icon: '🚃', note: '函館本線・約 45 分鐘' },
+  { label: 'JR 小樽→札幌', url: 'https://japantravel.navitime.com/zh-tw/area/jp/depArrTimeList/00003724/00002928/00000227?direction=down', icon: '🚃', note: '函館本線・約 45 分鐘' },
+  { label: 'JR 手稻→小樽', url: 'https://www.navitime.co.jp/zh-tw/transfer/searchlist?orvStationCode=00003453&dnvStationCode=00002928&defaultCondition=0', icon: '🚃', note: '函館本線・約 25 分鐘' },
+  { label: '小樽水族館巴士時刻', url: 'https://otaru-aq.jp/guide/bus', icon: '🐬', note: '祝津線・水族館線' },
+  { label: '市電時刻表（行啓通站）', url: 'https://www.stsp.or.jp/wp-content/themes/stsp/images/time/winter2025/time_sc18.pdf', icon: '🚋', note: '民宿最近站' },
+  { label: '藻岩山免費接駁巴士', url: 'https://mt-moiwa.jp/access/shuttlebus-tram/', icon: '🚡', note: '市電ロープウェイ入口站發車' },
+];
+
+const WEATHER_FORECAST_LINKS = [
+  { label: 'tenki.jp 札幌', url: 'https://tenki.jp/forecast/1/2/1400/1100/', icon: '🌨', note: '札幌市中央區' },
+  { label: 'tenki.jp 小樽', url: 'https://tenki.jp/forecast/1/2/1600/1203/', icon: '🌨', note: '小樽市' },
+  { label: 'tenki.jp 新千歲空港', url: 'https://tenki.jp/leisure/airport/1/2/24011/', icon: '✈️', note: '機場天氣' },
+  { label: '手稻滑雪場 天氣', url: 'https://tenki.jp/season/ski/1/2/11706/', icon: '⛷', note: '滑雪場氣象' },
+  { label: '藻岩山天氣預報', url: 'https://tenki.jp/mountain/normal/1/2/1102.html', icon: '⛰️', note: 'tenki.jp 山岳氣象' },
+  { label: 'Windy 風場圖（札幌）', url: 'https://www.windy.com/43.06/141.35', icon: '📡', note: '即時風速・降雪雷達' },
+];
+
+const PREP_LINKS = [
+  { label: '雪具租借預約（手稻滑雪場）', url: 'https://sapporo-teine.com/snow/lang/en/rentals/', icon: '⛷', note: '線上預約租借滑雪裝備' },
+  { label: 'Visit Japan Web', url: 'https://www.vjw.digital.go.jp/', icon: '🛂', note: '入境審查・海關申報・免稅手續' },
+];
 
 // ============================================================
 // COMPONENTS
@@ -294,8 +539,123 @@ function Header() {
   );
 }
 
+// Weather Alert Banner
+function WeatherAlertBanner({ weatherData, selectedDay }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const dayWeather = (weatherData || []).find(w => w.day === selectedDay);
+  const isAlert = dayWeather && (
+    dayWeather.snowfall > 15 || dayWeather.windSpeed > 50 || [71, 73, 75, 77, 85, 86, 95, 96, 99].includes(dayWeather.weatherCode)
+  );
+
+  if (!isAlert) return null;
+
+  const tips = DAY_TRANSPORT_TIPS[selectedDay];
+  const links = WEATHER_ALERT_LINKS[selectedDay] || WEATHER_ALERT_LINKS[1];
+
+  return (
+    <div className="sticky top-16 z-40 alert-slide">
+      {!expanded ? (
+        <div className="bg-alert text-white px-4 py-2.5 shadow-lg cursor-pointer" onClick={() => setExpanded(true)}>
+          <div className="max-w-lg mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-white rounded-full alert-pulse" />
+              <span className="text-xs font-bold">⚠️ Day{selectedDay} 暴風雪警報：{tips?.summary}</span>
+            </div>
+            <span className="text-xs opacity-80">詳情 ▼</span>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white border-b-2 border-alert shadow-xl max-h-[70vh] overflow-y-auto">
+          <div className="max-w-lg mx-auto p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-alert flex items-center gap-2">⚠️ Day{selectedDay} 暴風雪交通警報</h3>
+              <button onClick={() => setExpanded(false)} className="text-xs text-warmgray px-2 py-1 rounded-full bg-gray-100 btn-press">收合 ▲</button>
+            </div>
+
+            <span className="inline-block text-xs bg-alert-soft text-alert px-2 py-0.5 rounded-full font-medium border border-alert/20 mb-3">
+              降雪 {dayWeather.snowfall?.toFixed(1)}cm / 風速 {dayWeather.windSpeed}km/h
+            </span>
+
+            <div className="space-y-3">
+              {tips && (
+                <>
+                  <div>
+                    <p className="text-xs font-bold text-gray-700 mb-1.5">⚠️ 本日風險提醒</p>
+                    <div className="bg-alert-soft rounded-xl px-3 py-2">
+                      <p className="text-xs text-alert font-medium">{tips.risk}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold text-gray-700 mb-1.5">📋 本日交通備案</p>
+                    <div className="space-y-1.5">
+                      {tips.alternatives.map((alt, i) => (
+                        <div key={i} className="flex gap-2 text-xs bg-gray-50 px-3 py-2 rounded-xl">
+                          <span className="text-fuji font-bold mt-px">{i + 1}.</span>
+                          <span className="text-gray-700">{alt}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div>
+                <p className="text-xs font-bold text-gray-700 mb-1.5">🚦 即時運行狀況</p>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {links.transport.map((link, i) => (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-xs bg-gray-50 hover:bg-fuji/10 px-3 py-2 rounded-xl btn-press"
+                      onClick={e => e.stopPropagation()}>
+                      <span>{link.icon}</span>
+                      <span className="font-medium text-gray-700">{link.label}</span>
+                      <span className="ml-auto text-fuji">查看 →</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-gray-700 mb-1.5">🚕 替代交通</p>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {links.altTransport.map((link, i) => (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-xs bg-gray-50 hover:bg-fuji/10 px-3 py-2 rounded-xl btn-press"
+                      onClick={e => e.stopPropagation()}>
+                      <span>{link.icon}</span>
+                      <div className="flex-1">
+                        <span className="font-medium text-gray-700">{link.label}</span>
+                        {link.note && <span className="text-warmgray ml-1">— {link.note}</span>}
+                      </div>
+                      <span className="text-fuji">開啟 →</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-gray-700 mb-1.5">🌨 天氣預報</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {links.weather.map((link, i) => (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-1 text-xs bg-gray-50 hover:bg-fuji/10 px-3 py-2 rounded-xl btn-press font-medium text-gray-700"
+                      onClick={e => e.stopPropagation()}>
+                      {link.icon} {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Bottom Tab Bar
-function TabBar({ activeTab, onTabChange }) {
+function TabBar({ activeTab, onTabChange, hasAlert }) {
   const tabs = [
     { id: 'itinerary', icon: '🗓', label: '行程' },
     { id: 'guide', icon: '📋', label: '指南' },
@@ -309,7 +669,12 @@ function TabBar({ activeTab, onTabChange }) {
             className={`flex-1 flex flex-col items-center py-2.5 btn-press transition-colors ${
               activeTab === tab.id ? 'text-fuji' : 'text-warmgray'
             }`}>
-            <span className="text-xl">{tab.icon}</span>
+            <span className="relative text-xl">
+              {tab.icon}
+              {tab.id === 'weather' && hasAlert && (
+                <span className="absolute -top-1 -right-2 w-2.5 h-2.5 bg-alert rounded-full alert-pulse" />
+              )}
+            </span>
             <span className={`text-xs mt-0.5 font-medium ${activeTab === tab.id ? 'text-fuji' : ''}`}>{tab.label}</span>
             {activeTab === tab.id && <div className="w-6 h-0.5 bg-fuji rounded-full mt-1" />}
           </button>
@@ -361,11 +726,44 @@ function SpotCard({ spot }) {
 
         {expanded && (
           <div className="mt-3 fade-in">
-            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{spot.desc}</p>
+            {(() => {
+              const renderText = (text) => text.split(/(https?:\/\/[^\s）)]+)/g).map((part, i) => part.match(/^https?:\/\//) ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline break-all">{part}</a> : part);
+              const hasInlineImg = spot.images && spot.desc.includes('[IMG:');
+              if (hasInlineImg) {
+                return spot.desc.split(/(\[IMG:\d+\])/g).map((seg, i) => {
+                  const m = seg.match(/^\[IMG:(\d+)\]$/);
+                  if (m) {
+                    const img = spot.images[parseInt(m[1])];
+                    return img ? (
+                      <div key={i} className="my-2 rounded-xl overflow-hidden shadow-sm">
+                        <img src={img.src} alt={img.alt || ''} className="w-full h-auto" loading="lazy" />
+                        {img.caption && <p className="text-xs text-warmgray p-2 bg-gray-50">{img.caption}</p>}
+                      </div>
+                    ) : null;
+                  }
+                  return seg ? <p key={i} className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{renderText(seg)}</p> : null;
+                });
+              }
+              return (
+                <React.Fragment>
+                  <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{renderText(spot.desc)}</p>
+                  {spot.images && spot.images.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {spot.images.map((img, j) => (
+                        <div key={j} className="rounded-xl overflow-hidden shadow-sm">
+                          <img src={img.src} alt={img.alt || ''} className="w-full h-auto" loading="lazy" />
+                          {img.caption && <p className="text-xs text-warmgray p-2 bg-gray-50">{img.caption}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })()}
 
             <div className="flex flex-wrap gap-2 mt-3">
               {spot.mapQuery && (
-                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.mapQuery)}`}
+                <a href={spot.mapQuery.startsWith('http') ? spot.mapQuery : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.mapQuery)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-xs bg-fuji/10 text-fuji px-3 py-1.5 rounded-full font-medium btn-press"
                   onClick={e => e.stopPropagation()}>
@@ -402,7 +800,7 @@ function NearbyMeals({ dayNum }) {
     <div className="mt-4 bg-white rounded-2xl shadow-md border-l-4 border-l-yuzu overflow-hidden">
       <button onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 btn-press">
-        <span className="font-bold text-gray-800 text-sm flex items-center gap-2">🍽 附近美食選擇</span>
+        <span className="font-bold text-gray-800 text-sm flex items-center gap-2">🍽 午晚附近美食選擇</span>
         <span className={`text-warmgray text-xs transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}>▼</span>
       </button>
       {expanded && (
@@ -424,7 +822,7 @@ function NearbyMeals({ dayNum }) {
                         <p className="text-xs text-warmgray mt-0.5">{pick.note}</p>
                       </div>
                       {pick.mapQuery && (
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pick.mapQuery)}`}
+                        <a href={pick.mapQuery.startsWith('http') ? pick.mapQuery : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pick.mapQuery)}`}
                           target="_blank" rel="noopener noreferrer"
                           className="flex-shrink-0 ml-2 w-8 h-8 bg-fuji/10 text-fuji rounded-full flex items-center justify-center btn-press"
                           onClick={e => e.stopPropagation()}>
@@ -445,8 +843,7 @@ function NearbyMeals({ dayNum }) {
 // ============================================================
 // TAB: ITINERARY
 // ============================================================
-function ItineraryTab() {
-  const [selectedDay, setSelectedDay] = useState(1);
+function ItineraryTab({ selectedDay, onDayChange, alertDays }) {
   const scrollRef = useRef(null);
   const dayData = TRIP_DAYS.find(d => d.day === selectedDay);
 
@@ -458,15 +855,18 @@ function ItineraryTab() {
   return (
     <div className="fade-in">
       {/* Day selector */}
-      <div className="sticky top-[60px] z-30 glass py-3 px-2 -mx-4">
+      <div className={`sticky ${alertDays.includes(selectedDay) ? 'top-[100px]' : 'top-[60px]'} z-30 glass py-3 px-2 -mx-4`}>
         <div className="day-scroll flex gap-2 px-2" ref={scrollRef}>
           {TRIP_DAYS.map(d => (
-            <button key={d.day} onClick={() => setSelectedDay(d.day)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium btn-press transition-all whitespace-nowrap ${
+            <button key={d.day} onClick={() => onDayChange(d.day)}
+              className={`relative flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium btn-press transition-all whitespace-nowrap ${
                 selectedDay === d.day
                   ? 'bg-fuji text-white shadow-md shadow-fuji/30'
                   : 'bg-white text-gray-600 shadow-sm hover:bg-fuji/5'
               }`}>
+              {alertDays.includes(d.day) && (
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-alert rounded-full alert-pulse border-2 border-white" />
+              )}
               <span className="block text-xs opacity-75">{d.date}</span>
               <span>Day {d.day}</span>
             </button>
@@ -487,6 +887,24 @@ function ItineraryTab() {
               </div>
               <div className="text-4xl">{DAY_EMOJIS[dayData.day] || '❄️'}</div>
             </div>
+          </div>
+
+          {/* Hotel info */}
+          <div className="bg-white rounded-2xl shadow-md p-3.5 mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="text-2xl flex-shrink-0">🏨</span>
+              <div className="min-w-0">
+                <p className="font-bold text-sm text-gray-800 truncate">{TRIP_INFO.hotel.name}</p>
+                <p className="text-xs text-gray-500 truncate">{TRIP_INFO.hotel.address}</p>
+                <p className="text-xs text-warmgray">{TRIP_INFO.hotel.note}</p>
+              </div>
+            </div>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(TRIP_INFO.hotel.mapQuery)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex-shrink-0 ml-2 w-9 h-9 bg-fuji/10 text-fuji rounded-full flex items-center justify-center btn-press"
+              onClick={e => e.stopPropagation()}>
+              📍
+            </a>
           </div>
 
           {/* Spots */}
@@ -690,6 +1108,75 @@ function GuideTab() {
         )}
       </div>
 
+      {/* Prep Links */}
+      <div>
+        <button onClick={() => toggle('prep')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">📋 行前準備</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'prep' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'prep' && (
+          <div className="mt-2 space-y-1.5 fade-in">
+            {PREP_LINKS.map((link, i) => (
+              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-white rounded-2xl shadow-md px-4 py-3 btn-press">
+                <span className="text-xl">{link.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-gray-800">{link.label}</p>
+                  {link.note && <p className="text-xs text-warmgray">{link.note}</p>}
+                </div>
+                <span className="text-fuji text-sm">查看 →</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Timetable Links */}
+      <div>
+        <button onClick={() => toggle('timetable')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">🚃 交通時刻表</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'timetable' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'timetable' && (
+          <div className="mt-2 space-y-1.5 fade-in">
+            {TIMETABLE_LINKS.map((link, i) => (
+              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-white rounded-2xl shadow-md px-4 py-3 btn-press">
+                <span className="text-xl">{link.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-gray-800">{link.label}</p>
+                  {link.note && <p className="text-xs text-warmgray">{link.note}</p>}
+                </div>
+                <span className="text-fuji text-sm">查看 →</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Weather Forecast Links */}
+      <div>
+        <button onClick={() => toggle('weatherLinks')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
+          <span className="font-bold text-gray-800 flex items-center gap-2">🌤 天氣預報</span>
+          <span className={`text-warmgray transition-transform duration-300 ${openSection === 'weatherLinks' ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {openSection === 'weatherLinks' && (
+          <div className="mt-2 space-y-1.5 fade-in">
+            {WEATHER_FORECAST_LINKS.map((link, i) => (
+              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-white rounded-2xl shadow-md px-4 py-3 btn-press">
+                <span className="text-xl">{link.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-gray-800">{link.label}</p>
+                  {link.note && <p className="text-xs text-warmgray">{link.note}</p>}
+                </div>
+                <span className="text-fuji text-sm">查看 →</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Trip Info */}
       <div>
         <button onClick={() => toggle('info')} className="w-full flex items-center justify-between bg-white rounded-2xl shadow-md p-4 btn-press">
@@ -773,33 +1260,7 @@ function getClothingAdvice(dayNum, high, low) {
   return '長版羽絨外套 + 發熱衣 + 防滑鞋 + 暖暖包';
 }
 
-function WeatherTab() {
-  const [liveWeather, setLiveWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=43.06&longitude=141.35&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,snowfall_sum,wind_speed_10m_max,weather_code&timezone=Asia/Tokyo&start_date=2026-02-21&end_date=2026-02-28';
-    fetch(url)
-      .then(res => { if (!res.ok) throw new Error('API error'); return res.json(); })
-      .then(data => {
-        const days = data.daily.time.map((date, i) => ({
-          day: i + 1,
-          date: date.slice(5).replace('-', '/'),
-          location: WEATHER_DATA[i]?.location || '札幌',
-          high: Math.round(data.daily.temperature_2m_max[i]),
-          low: Math.round(data.daily.temperature_2m_min[i]),
-          precipProb: data.daily.precipitation_probability_max[i],
-          snowfall: data.daily.snowfall_sum[i],
-          windSpeed: Math.round(data.daily.wind_speed_10m_max[i]),
-          weatherCode: data.daily.weather_code[i],
-        }));
-        setLiveWeather(days);
-        setLoading(false);
-      })
-      .catch(() => { setError(true); setLoading(false); });
-  }, []);
-
+function WeatherTab({ liveWeather, loading, error }) {
   const weatherCards = liveWeather || WEATHER_DATA.map(w => ({
     day: w.day, date: w.date, location: w.location,
     high: w.high, low: w.low,
@@ -919,17 +1380,85 @@ function WeatherTab() {
 // ============================================================
 function App() {
   const [activeTab, setActiveTab] = useState('itinerary');
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [liveWeather, setLiveWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState(false);
+
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const tripEnd = TRIP_DATES[TRIP_DATES.length - 1];
+    const startDate = today > TRIP_DATES[0] ? today : TRIP_DATES[0];
+
+    if (startDate > tripEnd) {
+      setWeatherLoading(false);
+      return;
+    }
+
+    const groups = {};
+    DAY_COORDS.forEach((coord, i) => {
+      const key = `${coord.lat},${coord.lon}`;
+      if (!groups[key]) groups[key] = { lat: coord.lat, lon: coord.lon, indices: [] };
+      groups[key].indices.push(i);
+    });
+
+    const params = 'daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,snowfall_sum,wind_speed_10m_max,weather_code&timezone=Asia/Tokyo';
+
+    Promise.all(
+      Object.values(groups).map(g =>
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}&${params}&start_date=${startDate}&end_date=${tripEnd}`)
+          .then(r => { if (!r.ok) throw new Error('API error'); return r.json(); })
+          .then(json => ({ daily: json.daily, indices: g.indices }))
+      )
+    )
+      .then(results => {
+        const days = TRIP_DATES.map((date, i) => {
+          const result = results.find(r => r.indices.includes(i));
+          const idx = result?.daily?.time?.indexOf(date) ?? -1;
+          if (idx !== -1) {
+            return {
+              day: i + 1,
+              date: date.slice(5).replace('-', '/'),
+              location: WEATHER_DATA[i]?.location || '札幌',
+              high: Math.round(result.daily.temperature_2m_max[idx]),
+              low: Math.round(result.daily.temperature_2m_min[idx]),
+              precipProb: result.daily.precipitation_probability_max[idx],
+              snowfall: result.daily.snowfall_sum[idx],
+              windSpeed: Math.round(result.daily.wind_speed_10m_max[idx]),
+              weatherCode: result.daily.weather_code[idx],
+            };
+          }
+          const w = WEATHER_DATA[i];
+          return {
+            day: i + 1, date: w.date, location: w.location,
+            high: w.high, low: w.low,
+            precipProb: parseInt(w.snow), snowfall: null, windSpeed: null,
+            weatherCode: null, fallback: true,
+            feels: w.feels, depth: w.depth, desc: w.desc,
+          };
+        });
+        setLiveWeather(days);
+        setWeatherLoading(false);
+      })
+      .catch(() => { setWeatherError(true); setWeatherLoading(false); });
+  }, []);
+
+  const alertDays = (liveWeather || []).filter(w =>
+    w.snowfall > 15 || w.windSpeed > 50 || [71, 73, 75, 77, 85, 86, 95, 96, 99].includes(w.weatherCode)
+  );
+  const hasAlert = alertDays.length > 0;
 
   return (
     <div className="min-h-screen pb-24 pt-16">
       <SnowParticles />
       <Header />
+      <WeatherAlertBanner weatherData={liveWeather} selectedDay={selectedDay} />
       <main className="max-w-lg mx-auto px-4 pt-4 relative z-10">
-        {activeTab === 'itinerary' && <ItineraryTab />}
+        {activeTab === 'itinerary' && <ItineraryTab selectedDay={selectedDay} onDayChange={setSelectedDay} alertDays={alertDays.map(d => d.day)} />}
         {activeTab === 'guide' && <GuideTab />}
-        {activeTab === 'weather' && <WeatherTab />}
+        {activeTab === 'weather' && <WeatherTab liveWeather={liveWeather} loading={weatherLoading} error={weatherError} />}
       </main>
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} hasAlert={hasAlert} />
     </div>
   );
 }

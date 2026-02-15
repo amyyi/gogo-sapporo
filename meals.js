@@ -13,27 +13,32 @@ const MEALS_DATA = {
   },
   "2": {
     "lunch": {
-      "area": "大通公園 / 狸小路",
+      "area": "圓山公園周邊（步行可達）",
       "picks": [
-        { "name": "GARAKU 湯咖哩", "note": "人氣極高，建議 11:30 先去抽號碼牌", "tag": "推薦", "mapQuery": "GARAKU 湯咖哩 札幌" },
-        { "name": "Treasure 湯咖哩", "note": "GARAKU 姊妹店，備案首選", "mapQuery": "トレジャー 湯カレー 札幌" },
-        { "name": "Suage+ 湯咖哩", "note": "炸蔬菜風格湯咖哩", "mapQuery": "Suage+ 札幌" },
-        { "name": "Sapporo Ichiryuan", "note": "味噌拉麵", "mapQuery": "札幌一粒庵" },
-        { "name": "十勝豚丼 Ippin", "note": "炭烤豚丼", "mapQuery": "十勝豚丼いっぴん 札幌" }
+        { "name": "Maruyama Picante", "note": "人氣湯咖哩，行程午餐首選", "tag": "推薦", "mapQuery": "ピカンティ 円山 札幌" },
+        { "name": "Rojiura Curry Samurai 圓山店", "note": "隱藏版湯咖哩名店", "mapQuery": "路地裏カリィ侍 さくら店 札幌" },
+        { "name": "円山教授 円山本店", "note": "咖哩專門店，招牌浜カレー（海鮮咖哩）", "mapQuery": "円山教授 札幌" },
+        { "name": "Fuwatto まるやまキッチン", "note": "招牌蛋包飯＋漢堡排燉菜，圓山站步行 4 分", "mapQuery": "ふわっとまるやまキッチン 札幌" },
+        { "name": "クロック (Crock)", "note": "歐風咖哩＋起司蛋包，圓山站步行可達", "mapQuery": "クロック 円山 札幌" }
       ]
     },
     "dessert": {
-      "area": "大通",
+      "area": "圓山 / 北海道神宮",
       "picks": [
-        { "name": "六花亭 札幌本店", "note": "雪冰淇淋和三明治", "mapQuery": "六花亭 札幌本店" }
+        { "name": "圓山鬆餅 (Maruyama Pancake)", "note": "鬆軟日式鬆餅，行程下午茶", "tag": "推薦", "mapQuery": "Maruyama Pancake 札幌" },
+        { "name": "森彦 本店", "note": "老屋改建咖啡廳，圓山站步行 4 分", "mapQuery": "森彦 本店 札幌" },
+        { "name": "六花亭 神宮茶屋店", "note": "限定現烤判官餅", "mapQuery": "六花亭 神宮茶屋店" },
+        { "name": "紫陽花珈琲", "note": "Ricotta 鬆餅入口即化，圓山站步行可達", "mapQuery": "紫陽花珈琲 札幌" }
       ]
     },
-    "dinner": {
-      "area": "札幌啤酒花園",
-      "picks": [
-        { "name": "札幌啤酒花園", "note": "成吉思汗烤肉 + 啤酒暢飲", "tag": "推薦", "mapQuery": "サッポロビール園" }
-      ]
-    }
+    // "dinner": {
+    //   "area": "薄野 / 狸小路",
+    //   "picks": [
+    //     { "name": "THE SAKURA BUFFET", "note": "行程晚餐：三大蟹吃到飽（已訂位）", "tag": "推薦", "mapQuery": "THE SAKURA BUFFET 札幌" },
+    //     { "name": "達摩 (Daruma)", "note": "成吉思汗烤肉名店，備案", "mapQuery": "だるま 本店 札幌" },
+    //     { "name": "札幌啤酒花園", "note": "成吉思汗烤肉 + 啤酒暢飲，備案", "mapQuery": "サッポロビール園" }
+    //   ]
+    // }
   },
   "3": {
     "lunch": {
@@ -54,9 +59,11 @@ const MEALS_DATA = {
       ]
     },
     "dinner": {
-      "area": "札幌狸小路",
+      "area": "小樽運河 / 札幌狸小路",
       "picks": [
-        { "name": "居酒屋 炎 (En)", "note": "氣氛熱鬧的居酒屋", "tag": "推薦", "mapQuery": "炎 居酒屋 狸小路" },
+        { "name": "小樽倉庫 No.1", "note": "運河旁石造倉庫改建，自釀啤酒＋德式料理", "tag": "推薦", "mapQuery": "小樽倉庫No.1" },
+        { "name": "若雞時代 なると 本店", "note": "小樽名物！招牌半身炸雞，外酥內嫩", "mapQuery": "若鶏時代なると 本店 小樽" },
+        { "name": "居酒屋 炎 (En)", "note": "氣氛熱鬧的居酒屋", "mapQuery": "炎 居酒屋 狸小路" },
         { "name": "串鳥", "note": "平價串燒連鎖", "mapQuery": "串鳥 狸小路" },
         { "name": "居酒屋 瑠玖＆魚平", "note": "海鮮居酒屋", "mapQuery": "瑠玖＆魚平 札幌" },
         { "name": "結尾聖代", "note": "深夜甜點文化體驗", "mapQuery": "シメパフェ 札幌 狸小路" }
@@ -65,19 +72,17 @@ const MEALS_DATA = {
   },
   "4": {
     "lunch": {
-      "area": "圓山公園周邊",
+      "area": "大通公園周邊",
       "picks": [
-        { "name": "圓山鬆餅 (Maruyama Pancake)", "note": "鬆軟日式鬆餅", "tag": "推薦", "mapQuery": "Maruyama Pancake 札幌" },
-        { "name": "Rojiura Curry Samurai 圓山店", "note": "隱藏版湯咖哩", "mapQuery": "侍.カレー 圓山店" },
-        { "name": "Maruyama Picante", "note": "人氣湯咖哩", "mapQuery": "ピカンティ 札幌" },
-        { "name": "Professor Maruyama Curry", "note": "特色咖哩飯", "mapQuery": "プロフェッサー 円山カレー" }
+        { "name": "GARAKU 湯咖哩", "note": "排隊名店，建議 11:30 先去抽號碼牌", "tag": "推薦", "mapQuery": "GARAKU 湯咖哩 札幌" },
+        { "name": "Treasure 湯咖哩", "note": "GARAKU 姊妹店，排隊備案", "mapQuery": "トレジャー 湯咖哩 札幌" },
+        { "name": "Suage+ 湯咖哩", "note": "串燒湯咖哩，備案選擇", "mapQuery": "Suage+ 札幌" }
       ]
     },
     "dessert": {
-      "area": "圓山",
+      "area": "白色戀人公園 / 宮之澤",
       "picks": [
-        { "name": "pudding maruyama", "note": "手工布丁專賣", "mapQuery": "pudding maruyama 札幌" },
-        { "name": "六花亭 神宮茶屋店", "note": "限定判官燒", "mapQuery": "六花亭 神宮茶屋店" }
+        { "name": "白色戀人公園 甜點", "note": "園內限定甜點與伴手禮", "mapQuery": "白い恋人パーク" }
       ]
     },
     "dinner": {
