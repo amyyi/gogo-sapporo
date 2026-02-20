@@ -13,6 +13,7 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="meals.js"></script>
+<script src="splitbill.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -107,18 +108,16 @@ const TRIP_DAYS = [
     ]
   },
   {
-    day: 2, date: '2/22(日)', theme: '札幌經典巡禮 & 螃蟹吃到飽', location: '二條市場・美月櫻・東本願寺・北海道神宮・伏見稻荷',
+    day: 2, date: '2/22(日)', theme: '札幌經典巡禮 & 螃蟹吃到飽', location: '二條市場・美月櫻・東本願寺・北海道神宮・圓山',
     clothing: '和服內搭發熱衣褲（玉米式穿法）、暖暖包貼背部與腳底、防滑草履或雪靴（視店家提供）',
     snowTip: '二月下旬約 -5°C，室外極冷。和服內可加穿發熱衣，移動建議搭計程車（10 人分乘 3 台，人均費用與地鐵持平，且能直達景點避免雪地步行）',
     spots: [
-      { time: '09:30', name: '分組行動', desc: '⚠ 分組行動：\n\n👘 和服組（Luna、Amy、Fish）→ 抵達美月櫻，進行和服租借與著裝\n🍜 早餐組（其他人）→ 前往二條市場\n\n📍 二條市場推薦：大磯（烤魚/海鮮丼）或 Donburi Chaya\n💰 預算：2,500~3,500 日圓', icon: '👘', category: '活動', tags: ['必拍'], mapQuery: '美月櫻 札幌', photoTip: '海鮮丼俯拍 + 市場人文街拍' },
-      { time: '11:30', name: '美月櫻集合', desc: '全員於美月櫻集合，搭乘 3 台計程車前往東本願寺。', icon: '🚕', category: '交通', tags: [], mapQuery: '美月櫻 札幌' },
-      { time: '11:45', name: '東本願寺 札幌別院', desc: '大雪、黑木建築與和服的絕佳拍照點。\n\n📸 街拍重點\n・莊嚴木造建築與屋簷\n・比起神宮人潮更少\n・非常適合拍出安靜、禪意的和服大片', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '真宗大谷派 東本願寺 札幌別院', photoTip: '木造屋簷下的和服側拍，光影效果極佳' },
-      { time: '12:30', name: '午餐：Maruyama Picante', desc: '由東本願寺搭計程車約 12 分鐘抵達。', icon: '🍜', category: '食物', tags: [], mapQuery: 'picante 札幌 円山' },
-      { time: '14:00', name: '北海道神宮', desc: '步行穿過圓山公園參拜。週日人多，請預留拍照排隊時間。\n\n📸 街拍重點\n・和服與神宮是絕配\n・巨大鳥居、手水舍、通往本殿的林道\n・氣場非常強\n\n🍡 必吃：六花亭神宮茶屋的現烤「判官餅」（判官さま）', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '北海道神宮', photoTip: '雪中鳥居 × 和服，用廣角拍出氣勢' },
-      { time: '15:30', name: '圓山鬆餅（下午茶）', desc: '若需候位，可先派代表登記，其他人繼續在神宮拍照。', icon: '🍜', category: '食物', tags: [], mapQuery: 'Maruyama Pancake 札幌', photoTip: '鬆餅堆疊側拍最誘人' },
-      { time: '16:30', name: '伏見稻荷神社', desc: '拍攝著名的雪中「千本鳥居」與薄暮景色，紅色鳥居在白雪中超級醒目（IG 爆紅打卡點）。\n\n🚕 交通：搭計程車前往。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '伏見稲荷神社 札幌', photoTip: '紅色鳥居 × 白雪對比最吸睛，從低角度拍' },
-      { time: '17:30', name: '還衣服 / 狸小路', desc: '回到美月櫻還衣服，隨後在狸小路自由活動採買。', icon: '🛍', category: '購物', tags: [], mapQuery: '狸小路商店街 札幌' },
+      { time: '09:30', name: '分組行動', desc: '⚠ 分組行動：\n\n👘 和服組（Luna、Amy、Fish、阿維）→ 抵達美月櫻，進行和服租借與著裝\n🍜 早餐組（其他人）→ 前往二條市場\n\n📍 二條市場推薦：大磯（烤魚/海鮮丼）或 Donburi Chaya\n💰 預算：2,500~3,500 日圓', icon: '👘', category: '活動', tags: ['必拍'], mapQuery: '美月櫻 札幌', photoTip: '海鮮丼俯拍 + 市場人文街拍' },
+      { time: '11:00', name: '東本願寺 札幌別院', desc: '從美月櫻步行或搭計程車（約 5 分鐘）即可抵達。宏偉的木造建築，穿和服拍照極具震撼力。\n\n📸 街拍重點\n・莊嚴木造建築與屋簷\n・比起神宮人潮更少\n・非常適合拍出安靜、禪意的和服大片\n\n🥪 推薦：走路 3 分鐘可去附近最強三明治 Sandria（サンドリア）總店', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '真宗大谷派 東本願寺 札幌別院', photoTip: '木造屋簷下的和服側拍，光影效果極佳' },
+      { time: '12:00', name: '午餐：Maruyama Picante', desc: '建議分乘 3 台計程車前往（約 15 分鐘）。\n\n🔄 備案：Rojiura Curry Samurai（圓山店）、円山教授、円山本店', icon: '🍜', category: '食物', tags: [], mapQuery: 'picante 札幌 円山' },
+      { time: '13:30', name: '北海道神宮[開拓神社/第二/第三鳥居] & 圓山公園', desc: '走路 2～10 分鐘即到（看午餐吃哪裡）。週日人多，請預留拍照排隊時間。\n\n📸 街拍重點\n・和服與神宮是絕配\n・巨大鳥居、手水舍、通往本殿的林道\n・氣場非常強\n\n🍡 必吃：六花亭神宮茶屋的現烤「判官餅」（判官さま）\n🎀 必買：Hello Kitty 御守', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '北海道神宮', photoTip: '雪中鳥居 × 和服，用廣角拍出氣勢' },
+      { time: '15:00', name: '圓山鬆餅（下午茶）', desc: '比較多人需要排隊，累了可以休息喝個下午茶。若需候位，可先派代表登記。', icon: '🍜', category: '食物', tags: [], mapQuery: 'Maruyama Pancake 札幌', photoTip: '鬆餅堆疊側拍最誘人' },
+      { time: '16:00', name: '逛街採買 / 還和服', desc: '回到市區逛街採買，並將和服歸還美月櫻。\n\n🎯 推薦：黃色潛水艇（Yellow Submarine）', icon: '🛍', category: '購物', tags: [], mapQuery: '狸小路商店街 札幌' },
       { time: '19:00', name: '⚠ SAKURA BUFFET', desc: '晚餐大團圓，螃蟹吃到飽！三大蟹吃到飽及現場料理秀，主打「現蒸」鮮甜蟹肉。\n\n🎫 訂位代號：SD9893527\n🔗 訂位連結：hotpepper.jp（Tony 帳號）\n🎟 折價券：hokkaido.letsgojp.com/coupon/764036/\n💰 預算：約 10,000 日圓\n\n⚠ 此為已預約餐廳，請務必準時抵達。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'THE SAKURA BUFFET 札幌', photoTip: '三大蟹豪華擺盤 + 現蒸料理秀' },
     ]
   },
@@ -141,16 +140,15 @@ const TRIP_DAYS = [
     ]
   },
   {
-    day: 4, date: '2/24(二)', theme: '大通公園白色戀人藻岩山', location: '大通・宮之澤・藻岩山',
+    day: 4, date: '2/24(二)', theme: '千本鳥居 & 藻岩山夜景', location: '大通・白色戀人・伏見稻荷・藻岩山',
     clothing: '發熱內衣、中層刷毛、長版羽絨、暖暖包（藻岩山頂極冷）',
     snowTip: '藻岩山頂風大氣溫驟降，暖暖包貼滿',
     spots: [
-      { time: '09:00', name: '早餐：二條市場（Optional）', desc: '想吃海鮮丼的人可以早起來這裡！不想去的人可以睡到自然醒，直接 10:00 會合。\n\n📍 地點：大通附近，步行可達電視塔\n🍣 推薦：大磯（烤魚／海鮮丼）、Donburi Chaya\n💰 預算：2,500～3,500 日圓', icon: '🍜', category: '食物', tags: [], mapQuery: '二条市場 札幌', photoTip: '海鮮丼特寫，鮭魚卵粒粒分明' },
       { time: '10:00', name: '電視塔 & 大通公園', desc: '在大通公園雪地拍照，以電視塔為背景。冬季雖無雪祭，但積雪公園別有風情。\n\n📸 拍攝重點\n・電視塔 × 雪白大通公園全景\n・公園夜間點燈依然浪漫', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'さっぽろテレビ塔', photoTip: '以電視塔為背景，在雪地大通公園拍照' },
       { time: '12:00', name: 'GARAKU 湯咖哩', desc: '札幌排隊名店！人氣極高，建議派人 11:30 先去抽號碼牌。\n\n📍 地點：大通附近\n💰 預算：約 1,500 日圓\n\n🔄 備案：若排太久，改吃 Treasure（姊妹店）或 Suage+。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: 'GARAKU 湯咖哩 札幌', photoTip: '湯咖哩色彩繽紛，俯拍最好看' },
-      { time: '14:00', name: '白色戀人公園', desc: '歐式童話建築，參觀餅乾產線，戶外雪景非常美。\n\n🚇 交通：地鐵東西線「大通」→「宮之澤」（290 日圓），出站步行約 7 分鐘\n🎫 工廠參觀需門票（約 800 日圓）\n⏱ 建議停留 2-3 小時', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '白い恋人パーク', photoTip: '歐風中庭雪景超夢幻' },
-      { time: '15:30', name: '白色戀人公園→藻岩山 交通指南', desc: '全程約 40-45 分鐘，共 4 段接駁。\n\n🚶 Step 1：步行至宮之澤站（約 7 分鐘）\n從白色戀人公園大門出來，面對大馬路 XEBEC Miyanosawa，往 Fireburg Miyanosawa 方向沿人行道直走走到 Fireburg Miyanosawa 過馬路\n[IMG:0]\n直走到 XEBEC Miyanosawa 旁邊的巷子，看到黑色房子往黑色房子的巷子走\n[IMG:1]\n右手邊會看到西友超市（SEIYU），旁邊即為宮之澤站 5 號出口\n[IMG:2]\n\n🚇 Step 2：地鐵東西線 宮之澤→西 11 丁目（約 13-15 分鐘）\n從 5 號出口進入地下 1 樓驗票閘口，下至地下 2 樓月台。宮之澤站為終點站，1 號與 2 號月台列車皆經過西 11 丁目站，看電子看板哪班先發車即可搭乘。\n・站數：宮之澤 (T01) → 西 11 丁目 (T08)，共 7 站\n・車資：290 日圓\n\n🚋 Step 3：轉乘市電至索道入口站（約 20 分鐘）\n西 11 丁目站下車後，從 2 號或 3 號出口出站，步行 1-2 分鐘即到路面電車「西 11 丁目站」。搭乘「內環線」電車，途經中央區役所前、西 15 丁目，於「ロープウェイ入口」站下車。\n\n🚶 Step 4：步行至藻岩山纜車山麓站（約 7 分鐘）\n下車後沿南 19 條通指示牌往山上走，附近有免費接駁小巴站牌可搭乘。抵達藻岩山纜車山麓站（一樓設有售票處與紀念品店）。', icon: '🚇', category: '交通', tags: [], mapQuery: '宮の沢駅', images: [{ src: 'images/fireburg-miyanosawa.png', alt: 'Fireburg Miyanosawa 路口', caption: '走到 Fireburg Miyanosawa 後過馬路' }, { src: 'images/black-house-alley.png', alt: '黑色房子巷口', caption: '看到黑色房子，往黑色房子的巷子走' }, { src: 'images/miyanosawa-exit5.png', alt: '宮之澤站 5 號出口', caption: '宮之澤站 5 號出口' }] },
-      { time: '16:00', name: '藻岩山夜景', desc: '日本新三大夜景之一！上去前先看直播評估是否要上山。\n\n🚕 交通：搭計程車或市電至纜車口\n💰 門票：約 2,100 日圓\n⚠ 山頂極冷，暖暖包貼滿\n🌅 亮點：可同時看夕陽與夜景', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'もいわ山ロープウェイ', photoTip: '日落前 30 分上山可拍到漸層天空' },
+      { time: '14:00', name: '白色戀人公園', desc: '歐式童話建築，參觀餅乾產線，戶外雪景非常美。\n\n🚇 交通：地鐵東西線「大通」→「宮之澤」（290 日圓），出站步行約 7 分鐘\n🎫 工廠參觀需門票（約 800 日圓）', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '白い恋人パーク', photoTip: '歐風中庭雪景超夢幻' },
+      { time: '15:00', name: '伏見稻荷神社', desc: '拍攝著名的雪中「千本鳥居」與薄暮景色，紅色鳥居在白雪中超級醒目（IG 爆紅打卡點）。\n\n🚕 交通：從白色戀人搭計程車前往（約 20 分鐘）。', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: '伏見稲荷神社 札幌', photoTip: '紅色鳥居 × 白雪對比最吸睛，從低角度拍' },
+      { time: '16:00', name: '藻岩山夜景', desc: '日本新三大夜景之一！上去前先看直播評估是否要上山。\n\n🚕 交通：從伏見稻荷搭計程車至纜車口（約 10 分鐘）\n💰 門票：約 2,100 日圓\n⚠ 山頂極冷，暖暖包貼滿\n🌅 亮點：可同時看夕陽與夜景', icon: '⛩', category: '景點', tags: ['必拍'], mapQuery: 'もいわ山ロープウェイ', photoTip: '日落前 30 分上山可拍到漸層天空' },
       { time: '16:30', name: 'AOAO SAPPORO 水岸夜遊票（Optional）', desc: '藻岩山的備案，或吃完晚飯去也很適合！營業到深夜的都市水族館，氣氛如酒吧。\n\n📍 地點：狸小路 moyuk SAPPORO 大樓\n💰 夜遊票：2,500 日圓\n🎫 售票：https://www.asoview.com/channel/ticket/EIWcPfi2wp/ticket0000032113/\n\n🎁 夜遊票含「北極熊面包店&」兌換一份（三選一）：\n\n　1️⃣ 收尾巴菲雪糕套餐\n　　・應季收尾巴菲雪糕\n　　・企鵝收尾巴菲雪糕（伊沃特比企鵝巴菲雪糕）\n\n　2️⃣ SAPPORO 套餐\n　　・札幌古典＋混合堅果\n\n　3️⃣ 發光套餐\n　　・發光 AOAO 蘇打＋羊角面包（原味／天然酵母）', icon: '🐟', category: '景點', tags: [], mapQuery: 'AOAO SAPPORO' },
       { time: '19:00', name: '居酒屋 魚金', desc: '生魚片豪邁好吃！或選 Hokkaido Robinson。建議訂位。\n\n⚠️ 建議訂位，10 人團體尤其重要。', icon: '🍜', category: '食物', tags: ['必吃'], mapQuery: '魚金 札幌 薄野', photoTip: '刺身船盛超壯觀必拍' },
     ]
@@ -660,6 +658,7 @@ function TabBar({ activeTab, onTabChange, hasAlert }) {
     { id: 'itinerary', icon: '🗓', label: '行程' },
     { id: 'guide', icon: '📋', label: '指南' },
     { id: 'weather', icon: '🌨', label: '天氣' },
+    { id: 'split', icon: '💰', label: '分帳' },
   ];
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-200/50 shadow-lg">
@@ -1376,6 +1375,439 @@ function WeatherTab({ liveWeather, loading, error }) {
 }
 
 // ============================================================
+// TAB: SPLIT BILL
+// ============================================================
+
+function ExpenseCard({ expense, myId, onDelete }) {
+  const isPayer = expense.paidBy === myId;
+  const participants = expense.splitAmong && expense.splitAmong.length > 0 ? expense.splitAmong : SplitBill.GROUP_MEMBERS.map(m => m.id);
+  const perPerson = expense.splitType === 'custom'
+    ? (expense.customAmounts && expense.customAmounts[myId] || 0)
+    : Math.round(expense.amount / participants.length);
+  const isParticipant = myId && participants.includes(myId);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="p-3.5">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm text-warmgray font-medium">Day {expense.day}</span>
+              {isPayer && <span className="text-xs px-2 py-0.5 rounded-full bg-matcha/20 text-matcha border border-matcha/30 font-medium">我付的</span>}
+            </div>
+            <h4 className="font-bold text-gray-800 text-sm">{expense.description || '未命名消費'}</h4>
+          </div>
+          <div className="text-right">
+            <p className="font-bold text-fuji">{SplitBill.formatJPY(expense.amount)}</p>
+            {isParticipant && (
+              <p className="text-xs text-warmgray">我的份 {SplitBill.formatJPY(perPerson)}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex flex-wrap items-center gap-1.5 flex-1">
+            <span className="text-xs text-warmgray">💳 {SplitBill.getMemberName(expense.paidBy)}</span>
+            <span className="text-warmgray text-xs">→</span>
+            {participants.map(id => (
+              <span key={id} className={`text-xs px-1.5 py-0.5 rounded-full ${id === myId ? 'bg-fuji/10 text-fuji font-medium' : 'bg-gray-100 text-gray-500'}`}>
+                {SplitBill.getMemberInitial(id)}
+              </span>
+            ))}
+          </div>
+          {onDelete && (
+            <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              className="ml-2 text-xs text-warmgray hover:text-alert transition-colors btn-press opacity-40 hover:opacity-100"
+              title="刪除">🗑</button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DayFilter({ selectedDay, onDayChange }) {
+  const scrollRef = useRef(null);
+  const days = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  useEffect(() => {
+    const btn = scrollRef.current?.children[selectedDay];
+    btn?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [selectedDay]);
+  return (
+    <div className="day-scroll flex gap-2 px-2" ref={scrollRef}>
+      {days.map(d => (
+        <button key={d} onClick={() => onDayChange(d)}
+          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium btn-press transition-all whitespace-nowrap ${
+            selectedDay === d ? 'bg-fuji text-white shadow-md shadow-fuji/30' : 'bg-white text-gray-600 shadow-sm hover:bg-fuji/5'
+          }`}>
+          {d === 0 ? '全部' : `Day ${d}`}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [day, setDay] = useState(currentDay || 1);
+  const [paidBy, setPaidBy] = useState('');
+  const [splitType, setSplitType] = useState('equal_all');
+  const [selectedMembers, setSelectedMembers] = useState(SplitBill.GROUP_MEMBERS.map(m => m.id));
+  const [customAmounts, setCustomAmounts] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const identity = SplitBill.getIdentity();
+      if (identity) setPaidBy(identity);
+      setDay(currentDay || 1);
+    }
+  }, [isOpen, currentDay]);
+
+  const handleQuickAdd = (val) => setAmount(prev => String(Number(prev || 0) + val));
+
+  const perPerson = (() => {
+    const amt = Number(amount) || 0;
+    if (splitType === 'equal_all') return Math.round(amt / SplitBill.GROUP_MEMBERS.length);
+    if (splitType === 'equal_some') return selectedMembers.length > 0 ? Math.round(amt / selectedMembers.length) : 0;
+    return 0;
+  })();
+
+  const toggleMember = (id) => setSelectedMembers(prev => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
+
+  const handleSave = async () => {
+    if (!amount || Number(amount) <= 0 || !paidBy) return;
+    setSaving(true);
+    try {
+      await onSave({
+        day, description, amount: Number(amount), paidBy, splitType,
+        splitAmong: splitType === 'equal_all' ? SplitBill.GROUP_MEMBERS.map(m => m.id) : selectedMembers,
+        customAmounts: splitType === 'custom' ? customAmounts : undefined,
+      });
+      setAmount(''); setDescription(''); setSplitType('equal_all');
+      setSelectedMembers(SplitBill.GROUP_MEMBERS.map(m => m.id)); setCustomAmounts({});
+      onClose();
+    } catch (err) { alert('儲存失敗：' + err.message); }
+    finally { setSaving(false); }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-end justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-y-auto slide-up">
+        <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-4 border-b border-gray-100">
+          <button onClick={onClose} className="text-warmgray text-lg btn-press">✕</button>
+          <h3 className="font-bold text-gray-800">新增消費</h3>
+          <button onClick={handleSave} disabled={saving || !amount || !paidBy}
+            className={`font-bold text-sm btn-press ${(!amount || !paidBy || saving) ? 'text-warmgray' : 'text-fuji'}`}>
+            {saving ? '儲存中...' : '完成'}
+          </button>
+        </div>
+        <div className="p-4 space-y-5">
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">💰 金額</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-warmgray font-bold">¥</span>
+              <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
+                placeholder="0" inputMode="numeric"
+                className="w-full pl-8 pr-4 py-3 text-2xl font-bold border-2 border-gray-200 rounded-xl focus:border-fuji focus:outline-none transition-colors" />
+            </div>
+            <div className="flex gap-2 mt-2">
+              {[1000, 5000, 10000].map(v => (
+                <button key={v} onClick={() => handleQuickAdd(v)}
+                  className="flex-1 py-1.5 text-sm bg-gray-100 rounded-lg btn-press hover:bg-fuji/10 text-gray-600 font-medium">+{v.toLocaleString()}</button>
+              ))}
+            </div>
+            {Number(amount) > 0 && (
+              <p className="text-xs text-warmgray mt-1.5">= 每人 {SplitBill.formatJPY(perPerson)}（{splitType === 'equal_all' ? SplitBill.GROUP_MEMBERS.length : selectedMembers.length}人均分）</p>
+            )}
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">📝 說明（選填）</label>
+            <input type="text" value={description} onChange={e => setDescription(e.target.value)}
+              placeholder="例：三角市場晚餐"
+              className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-fuji focus:outline-none transition-colors text-sm" />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">📅 Day</label>
+            <div className="day-scroll flex gap-2">
+              {[1,2,3,4,5,6,7,8].map(d => (
+                <button key={d} onClick={() => setDay(d)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium btn-press transition-all ${
+                    day === d ? 'bg-fuji text-white shadow-md shadow-fuji/30' : 'bg-gray-100 text-gray-600'
+                  }`}>Day {d}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">💳 誰付的</label>
+            <div className="flex flex-wrap gap-2">
+              {SplitBill.GROUP_MEMBERS.map(m => (
+                <button key={m.id} onClick={() => setPaidBy(m.id)}
+                  className={`w-10 h-10 rounded-full text-sm font-bold btn-press transition-all flex items-center justify-center ${
+                    paidBy === m.id ? 'bg-fuji text-white shadow-md shadow-fuji/30' : 'bg-gray-100 text-gray-600 hover:bg-fuji/10'
+                  }`} title={m.name}>{SplitBill.getMemberInitial(m.id)}</button>
+              ))}
+            </div>
+            {paidBy && <p className="text-xs text-warmgray mt-1">{SplitBill.getMemberName(paidBy)} 付款</p>}
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">👥 怎麼分</label>
+            <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+              {[{id:'equal_all',label:'所有人均分'},{id:'equal_some',label:'部分人均分'},{id:'custom',label:'自訂金額'}].map(t => (
+                <button key={t.id} onClick={() => { setSplitType(t.id); if(t.id==='equal_all') setSelectedMembers(SplitBill.GROUP_MEMBERS.map(m=>m.id)); }}
+                  className={`flex-1 py-2 text-xs font-medium rounded-lg btn-press transition-all ${splitType===t.id?'bg-white text-fuji shadow-sm':'text-gray-500'}`}>{t.label}</button>
+              ))}
+            </div>
+            {splitType === 'equal_some' && (
+              <div className="mt-3 flex flex-wrap gap-2 fade-in">
+                {SplitBill.GROUP_MEMBERS.map(m => (
+                  <button key={m.id} onClick={() => toggleMember(m.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium btn-press transition-all ${selectedMembers.includes(m.id)?'bg-fuji text-white':'bg-gray-100 text-gray-400'}`}>{m.name}</button>
+                ))}
+              </div>
+            )}
+            {splitType === 'custom' && (
+              <div className="mt-3 space-y-2 fade-in">
+                {SplitBill.GROUP_MEMBERS.map(m => (
+                  <div key={m.id} className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600 w-16 truncate">{m.name}</span>
+                    <div className="relative flex-1">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-warmgray text-xs">¥</span>
+                      <input type="number" inputMode="numeric" value={customAmounts[m.id]||''}
+                        onChange={e => setCustomAmounts(prev=>({...prev,[m.id]:Number(e.target.value)||0}))} placeholder="0"
+                        className="w-full pl-6 pr-2 py-1.5 text-sm border border-gray-200 rounded-lg focus:border-fuji focus:outline-none" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <button onClick={handleSave} disabled={saving || !amount || !paidBy}
+            className={`w-full py-3.5 rounded-xl font-bold text-white btn-press transition-all ${(!amount||!paidBy||saving)?'bg-gray-300':'bg-fuji shadow-lg shadow-fuji/30 hover:bg-fuji-dark'}`}>
+            💾 儲存消費
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SettlementView() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const myId = SplitBill.getIdentity();
+
+  useEffect(() => { SplitBill.getSettlement().then(d => { setData(d); setLoading(false); }); }, []);
+
+  const handleCopy = async () => {
+    try {
+      const text = await SplitBill.getSettlementText();
+      await navigator.clipboard.writeText(text);
+      setCopied(true); setTimeout(() => setCopied(false), 2000);
+    } catch { alert('複製失敗'); }
+  };
+
+  if (loading) return <div className="text-center py-12 text-warmgray">計算中...</div>;
+  if (!data) return <div className="text-center py-12 text-warmgray">無法載入結算資料</div>;
+
+  const { balances, transfers } = data;
+  const sortedBalances = Object.entries(balances).sort((a, b) => b[1] - a[1]);
+
+  return (
+    <div className="space-y-4 fade-in">
+      <div className="bg-white rounded-2xl shadow-md p-4">
+        <h4 className="font-bold text-gray-800 mb-3">📊 餘額總覽</h4>
+        <div className="space-y-2">
+          {sortedBalances.map(([id, balance]) => (
+            <div key={id} className={`flex items-center justify-between py-2 px-3 rounded-xl ${id===myId?'bg-fuji/5 border border-fuji/20':''}`}>
+              <div className="flex items-center gap-2">
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${balance>1?'bg-matcha/20 text-matcha':balance<-1?'bg-yuzu/20 text-yuzu':'bg-gray-100 text-gray-400'}`}>{SplitBill.getMemberInitial(id)}</span>
+                <span className="text-sm font-medium text-gray-700">{SplitBill.getMemberName(id)}</span>
+                {id===myId && <span className="text-xs text-fuji font-medium">（我）</span>}
+              </div>
+              <span className={`text-sm font-bold ${balance>1?'text-matcha':balance<-1?'text-yuzu':'text-warmgray'}`}>
+                {balance>1?`+${SplitBill.formatJPY(balance)}`:balance<-1?`-${SplitBill.formatJPY(-balance)}`:'✓ 已結清'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-white rounded-2xl shadow-md p-4">
+        <h4 className="font-bold text-gray-800 mb-3">🔄 最少轉帳方案</h4>
+        {transfers.length === 0 ? (
+          <p className="text-warmgray text-sm text-center py-4">所有人已結清！</p>
+        ) : (
+          <div className="space-y-2">
+            {transfers.map((t, i) => (
+              <div key={i} className={`flex items-center justify-between py-2.5 px-3 rounded-xl ${(t.from===myId||t.to===myId)?'bg-fuji/5 border border-fuji/20':'bg-gray-50'}`}>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-medium text-gray-700">{SplitBill.getMemberName(t.from)}</span>
+                  <span className="text-warmgray">→</span>
+                  <span className="font-medium text-gray-700">{SplitBill.getMemberName(t.to)}</span>
+                </div>
+                <span className="text-sm font-bold text-fuji">{SplitBill.formatJPY(t.amount)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <button onClick={handleCopy}
+        className="w-full py-3 rounded-xl font-bold text-white bg-fuji shadow-lg shadow-fuji/30 btn-press hover:bg-fuji-dark transition-all">
+        {copied ? '✅ 已複製！' : '📋 複製結算摘要'}
+      </button>
+    </div>
+  );
+}
+
+function MyView() {
+  const [identity, setIdentity] = useState(SplitBill.getIdentity());
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (identity) { setLoading(true); SplitBill.getExpenses().then(data => { setExpenses(data); setLoading(false); }); }
+  }, [identity]);
+
+  const handleSelect = (id) => { SplitBill.setIdentity(id); setIdentity(id); };
+
+  if (!identity) {
+    return (
+      <div className="fade-in">
+        <div className="bg-white rounded-2xl shadow-md p-6 text-center">
+          <p className="text-4xl mb-3">👋</p>
+          <h4 className="font-bold text-gray-800 mb-1">你是誰？</h4>
+          <p className="text-sm text-warmgray mb-4">選擇你的名字來查看個人帳務</p>
+          <div className="grid grid-cols-3 gap-2">
+            {SplitBill.GROUP_MEMBERS.map(m => (
+              <button key={m.id} onClick={() => handleSelect(m.id)}
+                className="py-3 px-2 rounded-xl bg-gray-50 hover:bg-fuji/10 btn-press transition-all text-sm font-medium text-gray-700">{m.name}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const myExpenses = expenses.filter(e => e.paidBy === identity);
+  const myTotal = myExpenses.reduce((s, e) => s + e.amount, 0);
+  const involvedExpenses = expenses.filter(e => {
+    const p = e.splitAmong && e.splitAmong.length > 0 ? e.splitAmong : SplitBill.GROUP_MEMBERS.map(m => m.id);
+    return p.includes(identity);
+  });
+  const myShare = involvedExpenses.reduce((s, e) => {
+    if (e.splitType === 'custom') return s + (e.customAmounts && e.customAmounts[identity] || 0);
+    const p = e.splitAmong && e.splitAmong.length > 0 ? e.splitAmong : SplitBill.GROUP_MEMBERS.map(m => m.id);
+    return s + Math.round(e.amount / p.length);
+  }, 0);
+
+  return (
+    <div className="space-y-4 fade-in">
+      <div className="bg-gradient-to-r from-fuji to-fuji-dark text-white rounded-2xl p-4 shadow-lg">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-xs opacity-80">歡迎回來</p>
+            <h3 className="text-xl font-bold">{SplitBill.getMemberName(identity)}</h3>
+          </div>
+          <button onClick={() => { SplitBill.setIdentity(null); setIdentity(null); }}
+            className="text-xs opacity-70 underline btn-press">切換</button>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white/15 rounded-xl p-3"><p className="text-xs opacity-80">我代墊</p><p className="text-lg font-bold">{SplitBill.formatJPY(myTotal)}</p></div>
+          <div className="bg-white/15 rounded-xl p-3"><p className="text-xs opacity-80">我的份</p><p className="text-lg font-bold">{SplitBill.formatJPY(myShare)}</p></div>
+        </div>
+      </div>
+      {loading ? <div className="text-center py-8 text-warmgray">載入中...</div> : (
+        <div className="bg-white rounded-2xl shadow-md p-4">
+          <h4 className="font-bold text-gray-800 mb-3">我代墊的消費（{myExpenses.length}筆）</h4>
+          {myExpenses.length === 0 ? <p className="text-warmgray text-sm text-center py-4">尚無代墊紀錄</p> : (
+            <div className="space-y-2">
+              {myExpenses.map(e => (
+                <div key={e.id} className="flex items-center justify-between py-2 px-3 rounded-xl bg-gray-50">
+                  <div><p className="text-sm font-medium text-gray-700">{e.description||'未命名'}</p><p className="text-xs text-warmgray">Day {e.day}</p></div>
+                  <span className="text-sm font-bold text-fuji">{SplitBill.formatJPY(e.amount)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      {SplitBill.getPendingCount() > 0 && (
+        <div className="bg-yuzu/10 border border-yuzu/30 rounded-2xl p-3 text-center">
+          <p className="text-sm text-yuzu font-medium">⏳ {SplitBill.getPendingCount()} 筆待同步</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SplitBillTab() {
+  const [subView, setSubView] = useState('expenses');
+  const [expenses, setExpenses] = useState([]);
+  const [filterDay, setFilterDay] = useState(0);
+  const [showAdd, setShowAdd] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const myId = SplitBill.getIdentity();
+
+  const loadExpenses = useCallback(async () => {
+    setLoading(true);
+    const data = await SplitBill.getExpenses(filterDay || undefined);
+    setExpenses(data);
+    setLoading(false);
+  }, [filterDay]);
+
+  useEffect(() => {
+    loadExpenses();
+    SplitBill.syncPending().then(synced => { if (synced > 0) loadExpenses(); });
+  }, [loadExpenses]);
+
+  const handleAddExpense = async (data) => { await SplitBill.addExpense(data); await loadExpenses(); };
+
+  const handleDelete = async (id) => {
+    if (!confirm('確定刪除此消費？')) return;
+    await SplitBill.deleteExpense(id); await loadExpenses();
+  };
+
+  return (
+    <div className="fade-in">
+      <div className="sticky top-[60px] z-30 glass py-3 -mx-4 px-4">
+        <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+          {[{id:'expenses',label:'消費紀錄'},{id:'settlement',label:'結算'},{id:'my',label:'我的'}].map(v => (
+            <button key={v.id} onClick={() => setSubView(v.id)}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg btn-press transition-all ${subView===v.id?'bg-white text-fuji shadow-sm':'text-gray-500'}`}>{v.label}</button>
+          ))}
+        </div>
+      </div>
+      <div className="mt-4">
+        {subView === 'expenses' && (
+          <div className="fade-in">
+            <div className="mb-4"><DayFilter selectedDay={filterDay} onDayChange={setFilterDay} /></div>
+            {loading ? <div className="text-center py-12 text-warmgray">載入中...</div> :
+             expenses.length === 0 ? (
+              <div className="text-center py-12"><p className="text-4xl mb-2">📝</p><p className="text-warmgray text-sm">尚無消費紀錄</p><p className="text-warmgray text-xs mt-1">點擊右下角 + 新增</p></div>
+            ) : (
+              <div className="space-y-3">
+                {expenses.map(exp => (
+                  <ExpenseCard key={exp.id} expense={exp} myId={myId} onDelete={() => handleDelete(exp.id)} />
+                ))}
+              </div>
+            )}
+            <button onClick={() => setShowAdd(true)}
+              className="fixed bottom-20 right-4 w-14 h-14 bg-fuji text-white rounded-full shadow-lg shadow-fuji/40 flex items-center justify-center text-2xl btn-press hover:bg-fuji-dark transition-all z-40">+</button>
+            <AddExpenseSheet isOpen={showAdd} onClose={() => setShowAdd(false)} onSave={handleAddExpense} currentDay={filterDay || 1} />
+          </div>
+        )}
+        {subView === 'settlement' && <SettlementView />}
+        {subView === 'my' && <MyView />}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // APP
 // ============================================================
 function App() {
@@ -1457,6 +1889,7 @@ function App() {
         {activeTab === 'itinerary' && <ItineraryTab selectedDay={selectedDay} onDayChange={setSelectedDay} alertDays={alertDays.map(d => d.day)} />}
         {activeTab === 'guide' && <GuideTab />}
         {activeTab === 'weather' && <WeatherTab liveWeather={liveWeather} loading={weatherLoading} error={weatherError} />}
+        {activeTab === 'split' && <SplitBillTab />}
       </main>
       <TabBar activeTab={activeTab} onTabChange={setActiveTab} hasAlert={hasAlert} />
     </div>
