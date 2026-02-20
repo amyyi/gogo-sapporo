@@ -1484,8 +1484,7 @@ function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
         splitAmong: splitType === 'equal_all' ? SplitBill.GROUP_MEMBERS.map(m => m.id) : selectedMembers,
         customAmounts: splitType === 'custom' ? customAmounts : undefined,
       });
-      setAmount(''); setDescription(''); setSplitType('equal_all');
-      setSelectedMembers(SplitBill.GROUP_MEMBERS.map(m => m.id)); setCustomAmounts({});
+      setAmount(''); setDescription(''); setSplitType('equal_all'); setCustomAmounts({});
       onClose();
     } catch (err) { alert('儲存失敗：' + err.message); }
     finally { setSaving(false); }
@@ -1494,10 +1493,10 @@ function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-y-auto slide-up">
-        <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-4 border-b border-gray-100">
+    <div className="fixed inset-0 z-[60]" style={{display:'flex',flexDirection:'column'}}>
+      <div style={{height:'80px',flexShrink:0}} className="bg-black/40" onClick={onClose} />
+      <div className="w-full max-w-lg mx-auto bg-white rounded-t-3xl shadow-2xl slide-up" style={{flex:1,display:'flex',flexDirection:'column',overflow:'auto', maxHeight:'calc(100% - 153px)'}}>
+        <div className="flex items-center justify-between p-4 border-b border-gray-100" style={{flexShrink:0}}>
           <button onClick={onClose} className="text-warmgray text-lg btn-press">✕</button>
           <h3 className="font-bold text-gray-800">新增消費</h3>
           <button onClick={handleSave} disabled={saving || !amount || !paidBy}
@@ -1505,7 +1504,7 @@ function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
             {saving ? '儲存中...' : '完成'}
           </button>
         </div>
-        <div className="p-4 space-y-5">
+        <div className="p-4 space-y-5" style={{flex:1,overflowY:'auto',WebkitOverflowScrolling:'touch'}}>
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">💰 金額</label>
             <div className="relative">
@@ -1557,7 +1556,7 @@ function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
             <label className="text-sm font-medium text-gray-700 mb-2 block">👥 怎麼分</label>
             <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
               {[{id:'equal_all',label:'所有人均分'},{id:'equal_some',label:'部分人均分'},{id:'custom',label:'自訂金額'}].map(t => (
-                <button key={t.id} onClick={() => { setSplitType(t.id); if(t.id==='equal_all') setSelectedMembers(SplitBill.GROUP_MEMBERS.map(m=>m.id)); }}
+                <button key={t.id} onClick={() => { setSplitType(t.id); if(t.id==='equal_all') setSelectedMembers(SplitBill.GROUP_MEMBERS.map(m=>m.id)); if(t.id==='equal_some') setSelectedMembers([]); }}
                   className={`flex-1 py-2 text-xs font-medium rounded-lg btn-press transition-all ${splitType===t.id?'bg-white text-fuji shadow-sm':'text-gray-500'}`}>{t.label}</button>
               ))}
             </div>
@@ -1585,10 +1584,6 @@ function AddExpenseSheet({ isOpen, onClose, onSave, currentDay }) {
               </div>
             )}
           </div>
-          <button onClick={handleSave} disabled={saving || !amount || !paidBy}
-            className={`w-full py-3.5 rounded-xl font-bold text-white btn-press transition-all ${(!amount||!paidBy||saving)?'bg-gray-300':'bg-fuji shadow-lg shadow-fuji/30 hover:bg-fuji-dark'}`}>
-            💾 儲存消費
-          </button>
         </div>
       </div>
     </div>
